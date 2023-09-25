@@ -1,0 +1,174 @@
+<%-include('../layouts/header')%>
+<%- include('../partials/user-header')%>
+    <div class="container">
+        <div class="row">
+            <!-- Product Images -->
+            
+            <!-- Cover Image -->
+            <div class=" col-sm-4">
+                <div class="product-cover col-sm-12">
+                    <img src="/images/description1.webp" alt="Cover Image" class="img-fluid">
+                </div>
+                <div class="product-images col-2 col-sm-4 mt-4 d-flex">
+                    <img src="/images/description1.webp" alt="Product Image 1" class="img-thumbnail ">
+                    <img src="/images/description2.webp" alt="Product Image 2" class="img-thumbnail ">
+                    <img src="/images/description3.webp" alt="Product Image 3" class="img-thumbnail ">
+                </div>
+            </div>
+            <!-- Product Info -->
+            <div class=" col-sm-8">
+                <div class="product-info icons">
+                    <h2>After Dark Green Dial Leather</h2>
+                    <p>Rating: 4.5 (100 reviews)</p>
+                    <p>Price:<span class="text-decoration-line-through">6000/-</span> 4995/-</p>
+                    <p>Description: Fastrack White Dial Analog with Date Watch for Guys </p>
+                </div>
+
+                <!-- Color Variants -->
+                <h4>Color Variants:</h4>
+                <div class="color-variants col-2 col-sm-2 d-flex">
+                    <img src="/images/colors1.webp" alt="Color 1" class="img-thumbnail">
+                    <img src="/images/colors2.webp" alt="Color 2" class="img-thumbnail">
+                    <img src="/images/colors3.webp" alt="Color 3" class="img-thumbnail">
+                </div>
+
+                <!-- Product Actions -->
+                <div class="product-actions">
+                    <div class="counter">
+                        <div class="container mt-5">
+                            <div class="row">
+                                <div class="col-md-3 ">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-dark" id="minusBtn">-</button>
+                                        </div>
+                                        <input type="text" class="form-control text-center" id="count" value="0">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-dark" id="plusBtn">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary mt-2">Add to Cart</button>
+                <button class="btn btn-danger mt-2">Add to Wishlist</button>        
+            </div>
+            <div class="col-sm-12 mt-4 icons">
+                <div class="text-center">
+                    <h3>Product Specification</h3>
+                </div>
+                <div>
+                    <!-- List without bullets -->
+                    <ul class="list-unstyled">
+                        <li>Specification 1</li>
+                        <li>Specification 2</li>
+                        <li>Specification 3</li>
+                        <li>Specification 4</li>
+                        <li>Specification 5</li>
+                    </ul>
+                </div>
+            </div>
+    
+            <!-- New Section: Cards -->
+            <div class="col-sm-12 mt-4">
+                <div class="text-center icons">
+                    <h3>Reviews</h3>
+                </div>
+                <div class="row">
+                    <!-- Card 1 -->
+                    <div class="col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Star Rating -->
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                        
+                                <!-- Dummy Review -->
+                                <p class="card-text">A great product with excellent features and quality.</p>
+                        
+                                <!-- Name (Bold Text) -->
+                                <p class="card-text"><strong>John Doe</strong></p>
+                            </div>
+                            <!-- Card content here -->
+                        </div>
+                    </div>
+    
+                    <!-- Card 2 -->
+                    <div class="col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Star Rating -->
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                        
+                                <!-- Dummy Review -->
+                                <p class="card-text">A great product with excellent features and quality.</p>
+                        
+                                <!-- Name (Bold Text) -->
+                                <p class="card-text"><strong>John Doe</strong></p>
+                            </div>
+                            <!-- Card content here -->
+                        </div>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Star Rating -->
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                </div>
+                        
+                                <!-- Dummy Review -->
+                                <p class="card-text">A great product with excellent features and quality.</p>
+                        
+                                <!-- Name (Bold Text) -->
+                                <p class="card-text"><strong>John Doe</strong></p>
+                            </div>
+                            <!-- Card content here -->
+                        </div>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Star Rating -->
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                </div>
+                        
+                                <!-- Dummy Review -->
+                                <p class="card-text">A great product with excellent features and quality.</p>
+                        
+                                <!-- Name (Bold Text) -->
+                                <p class="card-text"><strong>John Doe</strong></p>
+                            </div>
+                            <!-- Card content here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Add more cards as needed -->
+                </div>
+            </div>
+        </div>
+    </div>
+<%- include('../partials/user-footer')%>
+<%- include('../layouts/footer') %>

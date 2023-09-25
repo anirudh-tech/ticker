@@ -1,0 +1,43 @@
+<%-include('../layouts/header')%>
+<%- include('../partials/user-header')%>
+
+<div class="container d-flex justify-content-center align-items-center mt-5">
+    <div class="card shadow" style="width: 30rem;">
+        <div class="card-body d-flex flex-column">
+            <h5 class="card-title icons text-center">Verify Your Email Address</h5>
+            <p class="card-subtitle mb-2 text-body-secondary icons text-center" style="font-size: small;">Enter the OTP received in the registered Email Address</p>
+            
+            <div class="d-flex justify-content-between form-check-label mt-3">
+                <span class="card-link ms-2">Verification Code</span>
+                <a href="#" class="card-link me-4">Resend code</a>
+            </div>     
+            <div class="verify">
+                <input
+                      type="number"
+                      class="form-control mt-2 "
+                      id="number"
+                      placeholder="Enter your OTP"
+                    />
+            </div>
+            <div class="mt-3">
+                <button
+                      id = "emailVerification"
+                      type="submit"
+                      class="btn text-center text-white sign-in1 btn-lg"
+                      style="
+                        background-color: #fa8232;
+                        width: -webkit-fill-available;
+                        border: none;
+                      "
+                    >
+                      Sign up
+                    </button>
+            </div>       
+        </div>
+    </div>
+</div>
+
+
+<%- include('../layouts/footer') %>
+
+

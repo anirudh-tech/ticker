@@ -1,0 +1,57 @@
+<%- include('../layouts/header')%>
+<%- include('../partials/user-header')%>
+<section>
+    <div class="container mt-5">
+        <div class="icon text-center">
+            <h1>LOG IN</h1>
+        </div>
+        <div class="row justify-content-center align-items-center mt-5 ">
+            <!-- Left Div: Login Form -->
+            <div class="col-md-3 loginBorder position-relative mt-5 pe-3">
+                <div class="orText">or</div>
+                <h5 class="mb-3">Login</h5>
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                    </div>
+                    <div class="mb-3">
+                        <a href="#" class="text-decoration-none ">Forgot password?</a>
+                    </div>
+                    <button type="submit" id="userLogged" class="btn btn-primary" style="width: -webkit-fill-available;">Login</button>
+                </form>
+            </div>
+            
+            <!-- Right Div: Continue with Google -->
+            <div class="col-md-3   ps-5 position-relative">
+                <div class="d-flex align-items-center"> 
+                    <img
+                        src="/images/google@2x.png"
+                        alt=""
+                        class="ms-2 position-absolute"
+                        style="height: 70%;"
+                    />
+                    <button
+                        type="button"
+                        class="btn btn-white ml-3 text-center border"
+                        style="width: -webkit-fill-available;"
+                    >
+                        Sign up with Google
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+        <div class="text-center mt-3">
+            <a href="" class="text-decoration-none">Create Account</a>
+        </div>
+        
+    </div>
+
+</section>
+<%- include('../layouts/footer') %>
+
