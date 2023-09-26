@@ -1,6 +1,42 @@
 
 <%- include('../layouts/header')%>
-<%- include('../partials/user-header')%>
+<header>
+  <nav class="navbar bg-body-tertiary p-0">
+    <div class="container-fluid d-flex justify-content-between align-items-middle" style="background-color: #f8eded;">
+        <div class="align-self-start"> <!-- Align the image to the left -->
+            <a class="navbar-brand">
+                <img src="/images/screenshot--272-removebgpreview-1@2x.png" style="max-height: 70px;" alt="">
+            </a>
+        </div>
+        <div class=" me-5"> 
+          <div class="d-flex gap-3 align-items-center">
+              <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+              </form>
+              <div>
+                <a class="text-decoration-none text-dark" href="">
+                <i class="fa-solid fa-heart"></i><span> Wishlist</span>
+                </a>
+              </div>
+              <div>
+                <a class="text-decoration-none text-dark" href="">
+                <i class="fa-solid fa-cart-shopping"></i><span> Cart</span>
+                </a>
+              </div>
+              <div>
+                <a class="text-decoration-none text-dark" href="/signup">
+                <i class="fa-solid fa-user"></i><span>
+                      signup
+                  </span>
+                </a>
+              </div>
+            </div>
+        </div>
+    </div>
+  </nav>
+
+  </header>
   <section class="mt-1">
     <div class="container">
       <div class="row ">
@@ -8,23 +44,23 @@
           <div class="card col-lg-8">
             <div class="card-body col-lg-12 d-flex gap-2">
               <div class="col-lg-6">
-                <form id="signupForm">
+                <form id="signupForm" action="/signup" method="post">
                   <div class="form-group">
                     <label for="name">Name</label>
-                    <input
-                      type="text"
-                      class="form-control mt-2 "
-                      id="name"
-                      placeholder="Enter your name"
-                    />
+                    <input type="text" class="form-control mt-2" id="name" name="Username" placeholder="Enter your name" required/>
                   </div>
                   <div class="form-group mt-3">
                     <label for="email">Email Address</label>
+                    <%if(error){%>
+                      <p class="text-danger text-center"><%= error %></p>
+                  <%}%>
                     <input
                       type="email"
                       class="form-control mt-2"
                       id="email"
+                      name="Email"
                       placeholder="Enter your email address"
+                      required
                     />
                   </div>
                   <div class="form-group mt-3">
@@ -33,9 +69,10 @@
                       <input
                         type="password"
                         class="form-control"
-                        name="password"
+                        name="Password"
                         id="password"
                         placeholder="Enter your password"
+                        required
                       />
                       <div class="input-group-append">
                         <button
@@ -48,15 +85,16 @@
                       </div>
                     </div>
                   </div>
-                  <div class="form-group mt-3">
+                  <div class="from-group mt-3">
                     <label for="confirmPassword">Confirm Password</label>
                     <div class="input-group mt-2">
                       <input
                         type="password"
                         class="form-control"
-                        name="confirmPassword"
                         id="confirmPassword"
+                        name="confirmPassword"
                         placeholder="Confirm your password"
+                        required
                       />
                       <div class="input-group-append">
                         <button
@@ -95,6 +133,7 @@
                       Sign up
                     </button>
                   </div>
+                </form>
                   <div class="mt-3">
                     <p class="text-center">or</p>
                   </div>
@@ -118,7 +157,6 @@
                       Already have an account? <a href="/login">Sign In</a>
                     </p>
                   </div>
-                </form>
               </div>
               <div class="col-lg-6 d-none d-xl-block">
                 <img

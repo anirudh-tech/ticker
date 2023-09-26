@@ -6,15 +6,26 @@ const userController = require('../controllers/userController')
 router.route('/')
     .get(userController.home)
 
+router.route('/homepage')
+    .get(userController.home)
+
+
+// router.route('/signup')
+//     .get(userController.signup)
+//     .post(userController.insertuser)
+
+router.get('/signup',userController.getUserSignup)
+router.post('/signup',userController.postUserSignup)
 
 router.route('/signup')
-    .get(userController.signup)
-    .post(userController.insertuser)
+    .get(userController.getUserSignup)
+    .post(userController.postUserSignup)
 
 
 
 router.route('/emailVerification')
-    .get(userController.verification)
+    .get(userController.getEmailVerification)
+    .post(userController.postEmailVerification)
 
 
 
@@ -24,6 +35,9 @@ router.route('/login')
 
 router.route('/productDescription')
     .get(userController.description)
+
+
+
 
 
 

@@ -23,8 +23,18 @@
               </a>
             </div>
             <div>
-              <a class="text-decoration-none text-dark" href="/signup">
-              <i class="fa-solid fa-user"></i><span> Signup</span>
+                <% if(user) { %>
+                  <a class="text-decoration-none text-dark">
+                    <%=user.Username %>
+                    <i class="fa-solid fa-user"></i><span>
+                  </a>
+                  <%} else { %>
+                    <a class="text-decoration-none text-dark" href="/signup">
+                        <i class="fa-solid fa-user"></i><span>
+                          signup
+                      </a>
+                    <%}%>
+                </span>
               </a>
             </div>
           </div>

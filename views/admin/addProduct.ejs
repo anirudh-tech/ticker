@@ -8,7 +8,7 @@
                 <div class="col-md-8">
                     <h1 class="mt-5">Add Product</h1>
                     <br>
-                    <form action="/admin/add-product" method="post" enctype="multipart/form-data" class="bg-white">
+                    <form action="/admin/addproduct" method="post" enctype="multipart/form-data" class="bg-white">
                         <div class="form-group">
                             <label for="productName">Product Name:</label>
                             <input
@@ -34,12 +34,35 @@
                         </div>
                         <br >
                         <div class="form-group">
-                            <label for="productDescription">Product Specification:</label>
+                            <label for="productSpecification">Product Specification:</label>
                             <textarea
                                 class="form-control bg-light"
-                                name="Description"
+                                name=""
+                                id="productSpecification1"
+                                placeholder="Enter product Specification"
+                                required
+                            ></textarea>
+                            <label for="productSpecification2">Product Specification:</label>
+                            <textarea
+                                class="form-control bg-light"
+                                name=""
                                 id="productSpecification"
-                                rows="4"
+                                placeholder="Enter product Specification"
+                                required
+                            ></textarea>
+                            <label for="productSpecification3">Product Specification:</label>
+                            <textarea
+                                class="form-control bg-light"
+                                name=""
+                                id="productSpecification"
+                                placeholder="Enter product Specification"
+                                required
+                            ></textarea>
+                            <label for="productSpecification4">Product Specification:</label>
+                            <textarea
+                                class="form-control bg-light"
+                                name=""
+                                id="productSpecification"
                                 placeholder="Enter product Specification"
                                 required
                             ></textarea>
@@ -119,18 +142,17 @@
                             </div>
                             <div id="watchColorInput" style="display: none;">
                                 <label for="watchColors">Enter Watch Colors:</label>
-                                <input type="text" id="watchColors">
+                                <input type="text"  name="watches" id="watchColors">
                             </div>
                             <div id="perfumeQuantityDropdown" style="display: none;">
                                 <label for="perfumeQuantity">Select Perfume Quantity:</label>
-                                <select id="perfumeQuantity">
-                                    <option value="1">50ML</option>
-                                    <option value="2">100ML</option>
-                                    <option value="3">150ML</option>
+                                <select id="perfumeQuantity" name="perfumes">
+                                    <option value="50 ML">50ML</option>
+                                    <option value="100 ML">100ML</option>
+                                    <option value="150 ML">150ML</option>
                                     <!-- Add more options as needed -->
                                 </select>
                             </div>
-                            
                         </div>
 
 
@@ -163,6 +185,7 @@
                                 type="text"
                                 class="form-control bg-light"
                                 id="category"
+                                name="Category"
                                 placeholder="Enter category"
                                 required
                             />
@@ -172,6 +195,7 @@
                             <input
                                 type="text"
                                 class="form-control bg-light"
+                                name="BrandName"
                                 id="brandName"
                                 placeholder="Enter brand name"
                                 required
@@ -182,6 +206,7 @@
                             <input
                                 type="text"
                                 class="form-control bg-light"
+                                name="Tags"
                                 id="tags"
                                 placeholder="Enter tags"
                                 required

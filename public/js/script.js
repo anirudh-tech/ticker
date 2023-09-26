@@ -23,20 +23,20 @@
         });
 
 
-        $('#signupForm').on('submit', function(event) {
-            event.preventDefault();
-            window.location.href = "/emailVerification";
-        });
+        // $('#signupForm').on('submit', function(event) {
+        //     event.preventDefault();
+        //     window.location.href = "/emailVerification";
+        // });
 
         $('#loginForm').on('submit',function(event){
             event.preventDefault()
             window.location.href = "/homepage"
         })
 
-        $('#emailVerification').on('click',function(event){
-            event.preventDefault()
-            window.location.href = "/homepage"
-        })
+        // $('#emailVerification').on('click',function(event){
+        //     event.preventDefault()
+        //     window.location.href = "/homepage"
+        // })
 
         const minusBtn = $('#minusBtn');
         const plusBtn = $('#plusBtn');
