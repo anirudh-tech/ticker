@@ -1,8 +1,30 @@
 const Product = require('../models/productSchema')
 
 module.exports = {
-    getProduct:(req,res)=>{
-        res.render("admin/adminShowProducts")
+    getProduct: async (req,res)=>{
+        try {
+            const page = parseInt(req.query.page) || 1; // Get the page number from query parameters
+            const perPage = 10; // Number of items per page
+            const skip = (page - 1) * perPage;
+        
+            // Query the database for products, skip and limit based on the pagination
+            const products = await Product.find()
+              .skip(skip)
+              .limit(perPage).lean();
+        
+            const totalCount = await Product.countDocuments(); 
+        
+            res.render('admin/adminShowProducts', {
+              products,
+              currentPage: page,
+              perPage,
+              totalCount,
+              totalPages: Math.ceil(totalCount / perPage),
+            });
+          } catch (error) {
+            console.error(error);
+            res.status(500).send('Internal Server Error');
+          }
     },
 
     getAddProduct: (req,res)=>{

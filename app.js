@@ -6,10 +6,12 @@ const adminRouter = require('./routers/admin')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const db = require('./config/db.js')
+const flash = require('express-flash');
 require('dotenv').config()
 
 const ejs = require('ejs')
 
+app.use(flash());
 app.use(express.static("public"))
 
 app.use(express.json())
@@ -22,6 +24,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
   }));
+  
 
 app.use("/",userRouter)
 app.use('/admin',adminRouter)

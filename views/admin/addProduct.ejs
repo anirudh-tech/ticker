@@ -86,20 +86,23 @@
                                 />
                             </div>
                             <!-- uploaded images -->
-                            <div class="row ">
+                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="uploaded-image">
-                                        <img src="#" alt="Uploaded Image 1" id="uploadedImage1" class="img-fluid">
+                                        <img src="" alt="Uploaded Image 1" id="uploadedImage1" class="img-fluid" data-index="1">
+                                        <button class="btn btn-danger btn-sm delete-image" style="display: none;" data-index="1">Delete</button>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="uploaded-image">
-                                        <img src="#" alt="Uploaded Image 2" id="uploadedImage2" class="img-fluid">
+                                        <img src="" alt="Uploaded Image 2" id="uploadedImage2" class="img-fluid" data-index="2">
+                                        <button class="btn btn-danger btn-sm delete-image" style="display: none;" data-index="2">Delete</button>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="uploaded-image">
-                                        <img src="#" alt="Uploaded Image 3" id="uploadedImage3" class="img-fluid">
+                                        <img src="" alt="Uploaded Image 3" id="uploadedImage3" class="img-fluid" data-index="3">
+                                        <button class="btn btn-danger btn-sm delete-image" style="display: none;" data-index="3">Delete</button>
                                     </div>
                                 </div>
                             </div>
@@ -181,25 +184,26 @@
                         <div class="form-group">
                             <br>
                             <label for="category">Category:</label>
-                            <input
-                                type="text"
-                                class="form-control bg-light"
-                                id="category"
-                                name="Category"
-                                placeholder="Enter category"
-                                required
-                            />
+                            <select class="form-select bg-light" id="category" name="Category" required>
+                                <option value="" selected disabled>Select a category</option>
+                                <option value="MEN'S WATCHES">MEN'S WATCHES</option>
+                                <option value="KID'S WATCHES">KID'S WATCHES</option>
+                                <option value="WOMEN'S WATCHES">WOMEN'S WATCHES</option>
+                                <option value="PERFUMES">PERFUMES</option>
+                                <option value="WALLETS">WALLETS</option>
+                            </select>
                         </div><br>
                         <div class="form-group">
+                            <br>
                             <label for="brandName">Brand Name:</label>
-                            <input
-                                type="text"
-                                class="form-control bg-light"
-                                name="BrandName"
-                                id="brandName"
-                                placeholder="Enter brand name"
-                                required
-                            />
+                            <select name="BrandName" class="form-select bg-light" id="brand" required>
+                                <option value="" selected disabled>Select a Brand</option>
+                                <option value="FASTRACK">FASTRACK</option>
+                                <option value="TITAN">TITAN</option>
+                                <option value="ROLEX">ROLEX</option>
+                                <option value="FOGG">FOGG</option>
+
+                            </select>
                         </div><br>
                         <div class="form-group">
                             <label for="tags">Tags:</label>

@@ -14,8 +14,9 @@ router.route('/homepage')
 //     .get(userController.signup)
 //     .post(userController.insertuser)
 
-router.get('/signup',userController.getUserSignup)
-router.post('/signup',userController.postUserSignup)
+router.route('/signup')
+    .get(userController.getUserSignup)
+    .post(userController.postUserSignup)
 
 router.route('/signup')
     .get(userController.getUserSignup)
@@ -25,12 +26,13 @@ router.route('/signup')
 
 router.route('/emailVerification')
     .get(userController.getEmailVerification)
-    .post(userController.postEmailVerification)
+    .post(userController.otpAuth,userController.postEmailVerification)
 
 
 
 router.route('/login')
-    .get(userController.login)
+    .get(userController.getUserLogin)
+    .post(userController.postUserLogin)
 
 
 router.route('/productDescription')
