@@ -7,7 +7,7 @@ const schema = mongoose.Schema({
   Email: { type: String, required: true },
   Password: { type: String, required: true },
   Mobile: { type: String },
-  Status: { type: String },
+  Status: { type: String ,default:"Active"},
   
   Orders: [{
      ObjectId: { type: String},

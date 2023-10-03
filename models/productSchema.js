@@ -62,6 +62,9 @@ const ProductsSchema = new mongoose.Schema({
   Specification4: {
     type: String
   },
+  deletedAt: { 
+    type: Date
+  }, 
 });
 
 const Products = mongoose.model("Products", ProductsSchema);

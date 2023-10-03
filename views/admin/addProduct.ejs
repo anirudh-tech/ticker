@@ -37,7 +37,7 @@
                             <label for="productSpecification">Product Specification:</label>
                             <textarea
                                 class="form-control bg-light"
-                                name=""
+                                name="Specification1"
                                 id="productSpecification1"
                                 placeholder="Enter product Specification"
                                 required
@@ -45,7 +45,7 @@
                             <label for="productSpecification2">Product Specification:</label>
                             <textarea
                                 class="form-control bg-light"
-                                name=""
+                                name="Specification2"
                                 id="productSpecification"
                                 placeholder="Enter product Specification"
                                 required
@@ -53,7 +53,7 @@
                             <label for="productSpecification3">Product Specification:</label>
                             <textarea
                                 class="form-control bg-light"
-                                name=""
+                                name="Specification3"
                                 id="productSpecification"
                                 placeholder="Enter product Specification"
                                 required
@@ -61,7 +61,7 @@
                             <label for="productSpecification4">Product Specification:</label>
                             <textarea
                                 class="form-control bg-light"
-                                name=""
+                                name="Specification4"
                                 id="productSpecification"
                                 placeholder="Enter product Specification"
                                 required
@@ -186,11 +186,9 @@
                             <label for="category">Category:</label>
                             <select class="form-select bg-light" id="category" name="Category" required>
                                 <option value="" selected disabled>Select a category</option>
-                                <option value="MEN'S WATCHES">MEN'S WATCHES</option>
-                                <option value="KID'S WATCHES">KID'S WATCHES</option>
-                                <option value="WOMEN'S WATCHES">WOMEN'S WATCHES</option>
-                                <option value="PERFUMES">PERFUMES</option>
-                                <option value="WALLETS">WALLETS</option>
+                                <% categories.forEach(function(category) { %>
+                                <option value="<%=category.Name%>"><%=category.Name%></option>
+                                <% }); %>
                             </select>
                         </div><br>
                         <div class="form-group">
@@ -198,11 +196,9 @@
                             <label for="brandName">Brand Name:</label>
                             <select name="BrandName" class="form-select bg-light" id="brand" required>
                                 <option value="" selected disabled>Select a Brand</option>
-                                <option value="FASTRACK">FASTRACK</option>
-                                <option value="TITAN">TITAN</option>
-                                <option value="ROLEX">ROLEX</option>
-                                <option value="FOGG">FOGG</option>
-
+                                <% brands.forEach(function(brand) { %>
+                                <option value="<%=brand.Name%>"><%=brand.Name%></option>
+                                <% }); %>
                             </select>
                         </div><br>
                         <div class="form-group">

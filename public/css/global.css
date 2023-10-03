@@ -1,3 +1,18 @@
 .table-shadow {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+.very-weak {
+  color: red;
+}
+.weak {
+  color: orange;
+}
+.moderate {
+  color: yellow;
+}
+.strong {
+  color: green;
+}
+.very-strong {
+  color: blue;
+}

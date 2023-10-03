@@ -2,7 +2,7 @@
 <nav class="navbar bg-body-tertiary p-0">
   <div class="container-fluid d-flex justify-content-between align-items-middle" style="background-color: #f8eded;">
       <div class="align-self-start"> <!-- Align the image to the left -->
-          <a class="navbar-brand">
+          <a class="navbar-brand" href="/homepage">
               <img src="/images/screenshot--272-removebgpreview-1@2x.png" style="max-height: 70px;" alt="">
           </a>
       </div>
@@ -24,10 +24,16 @@
             </div>
             <div>
                 <% if(user) { %>
-                  <a class="text-decoration-none text-dark">
-                    <%=user.Username %>
-                    <i class="fa-solid fa-user"></i><span>
-                  </a>
+                  <div class="dropdown">
+                    <a href="#" class="dropdown-toggle text-decoration-none text-dark" id="usernameLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        <%= user.Username %> <i class="fa-solid fa-user"></i>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="usernameLink">
+                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/logout" id="logoutLink">Logout</a></li>
+                    </ul>
+                </div>
                   <%} else { %>
                     <a class="text-decoration-none text-dark" href="/signup">
                         <i class="fa-solid fa-user"></i><span>

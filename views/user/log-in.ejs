@@ -1,61 +1,38 @@
 <%- include('../layouts/header')%>
 <header>
     <nav class="navbar bg-body-tertiary p-0">
-      <div class="container-fluid d-flex justify-content-between align-items-middle" style="background-color: #f8eded;">
-          <div class="align-self-start"> <!-- Align the image to the left -->
-              <a class="navbar-brand">
+      <div class="container-fluid d-flex justify-content-center align-items-middle " style="background-color: #f8eded;"> <!-- Align the image to the left -->
+              <a class="navbar-brand ">
                   <img src="/images/screenshot--272-removebgpreview-1@2x.png" style="max-height: 70px;" alt="">
               </a>
-          </div>
-          <div class=" me-5"> 
-            <div class="d-flex gap-3 align-items-center">
-                <form class="d-flex" role="search">
-                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                  <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-                <div>
-                  <a class="text-decoration-none text-dark" href="">
-                  <i class="fa-solid fa-heart"></i><span> Wishlist</span>
-                  </a>
-                </div>
-                <div>
-                  <a class="text-decoration-none text-dark" href="">
-                  <i class="fa-solid fa-cart-shopping"></i><span> Cart</span>
-                  </a>
-                </div>
-                <div>
-                  <a class="text-decoration-none text-dark" href="/signup">
-                  <i class="fa-solid fa-user"></i><span>
-                        signup
-                    </span>
-                  </a>
-                </div>
-              </div>
-          </div>
       </div>
     </nav>
     </header>
-<section>
-    <div class="container mt-5">
+<section class="vh-100">
+    <div class="container-fluid mt-5">
         <div class="icon text-center">
             <h1>LOG IN</h1>
         </div>
-        <div class="row justify-content-center align-items-center mt-5 ">
-            <!-- Left Div: Login Form -->
-            <div class="col-md-3 loginBorder position-relative mt-5 pe-3">
-                <div class="orText">or</div>
+        <div class="row justify-content-center align-items-center ">
+            <div class="col-md-3 loginBorder position-relative  pe-3">
+                <div class="orText d-none d-md-block">or</div>
                 <h5 class="mb-3">Login</h5>
                 <form id="loginForm" action="/login" method="post">
+                    <% if (messages.error) { %>
+                        <div class="alert alert-danger">
+                            <%= messages.error %>
+                        </div>
+                    <% } %>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email address</label>
-                        <input type="email" name="Email" class="form-control" id="email" placeholder="Enter your email">
+                        <input type="email" name="Email" class="form-control" id="email" placeholder="Enter your email" required>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" name="Password" class="form-control" id="loginPassword" placeholder="Enter your password">
+                        <input type="password" name="Password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
                     </div>
                     <div class="mb-3">
-                        <a href="#" class="text-decoration-none ">Forgot password?</a>
+                        <a href="/forgotpassword" class="text-decoration-none ">Forgot password?</a>
                     </div>
                     <button type="submit" id="userLogged" class="btn btn-primary" style="width: -webkit-fill-available;">Login</button>
                 </form>
@@ -63,7 +40,7 @@
             
             <!-- Right Div: Continue with Google -->
             <div class="col-md-3   ps-5 position-relative">
-                <div class="d-flex align-items-center"> 
+                <div class="d-flex align-items-center justify-content-start"> 
                     <img
                         src="/images/google@2x.png"
                         alt=""
@@ -75,7 +52,7 @@
                         class="btn btn-white ml-3 text-center border"
                         style="width: -webkit-fill-available;"
                     >
-                        Sign up with Google
+                        Sign in using Google
                     </button>
                 </div>
             </div>

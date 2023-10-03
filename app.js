@@ -23,11 +23,19 @@ app.use(session({
     secret: 'your-secret-key', 
     resave: false,
     saveUninitialized: true,
-  }));
+  }))
+  app.use((req,res,next)=>{
+    res.set('Cache-Control','no-store')
+    next();
+  })
+app.use(cookieParser())
   
 
 app.use("/",userRouter)
 app.use('/admin',adminRouter)
+app.use("*", (req,res) => {
+  res.render('errorpage')
+})
 
 const PORT = process.env.PORT
 

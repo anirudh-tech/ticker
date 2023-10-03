@@ -64,14 +64,14 @@
     font-weight: bold;
 }
 .blue-background{
-        background-color: rgb(180, 248, 225);
+        background-color: rgb(255, 255, 255);
 }
 .categories{
     text-decoration: underline;
     
 }
 /* .product-text {
-    display: flex;
+    display: flex; 
     flex-direction: column;
 } */
 
