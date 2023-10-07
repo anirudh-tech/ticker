@@ -3,7 +3,7 @@
 
 <div class="container-fluid">
     <div class="row  border-start">
-        <main class="px-md-4 icons " style="margin-left: 18%;width: 80%; margin-top: 6%;">
+        <main class="px-md-4 icons">
             <div class="row d-flex justify-content-between">
                 <div class="col-md-8">
                     <h1 class="mt-5">EDIT PRODUCT</h1>
@@ -83,19 +83,43 @@
                         <div class="border p-3 mb-3 bg-light "> <!-- Added bg-light and text-center classes -->
                             <h3>Media</h3>
                             <div class="form-group text-center">
-                                <label for="productImage">Drag and drop or click to upload an image:</label>
-                                <br><br><br><br>
+                                <label for="image1">Image 1:</label>
                                 <input
-                                type="file"
-                                name="images"
-                                class="form-control-file"
-                                id="productImage"
-                                accept="image/*"
-                                multiple
-                                style="display: none;"
-                                required
-                            />
+                                  type="file"
+                                  name="image1"
+                                  value="<%= product.images[0] %>"
+                                  class="form-control-file"
+                                  id="image1"
+                                  accept="image/*"
+                                />
+                                <img src="/uploads/<%= product.images[0] %>" alt="Image 1" class="img-fluid" style="max-height: 200px;">
+                              </div>
+                              <div class="form-group text-center">
+                                <label for="image2">Image 2:</label>
+                                <input
+                                  type="file"
+                                  name="image2"
+                                  value="<%= product.images[1] %>"
+                                  class="form-control-file"
+                                  id="image2"
+                                  accept="image/*"
+                                />
+                                <img src="/uploads/<%= product.images[1] %>" alt="Image 2" class="img-fluid" style="max-height: 200px;">
+                              </div>
+                              <div class="form-group text-center">
+                                <label for="image3">Image 3:</label>
+                                <input
+                                  type="file"
+                                  name="image3"
+                                  value="<%= product.images[2] %>"
+                                  class="form-control-file"
+                                  id="image3"
+                                  accept="image/*"
+                                />
+                                <img src="/uploads/<%= product.images[2] %>" alt="Image 3" class="img-fluid" style="max-height: 200px;">
+                              </div>
                             </div>
+
                             <!-- uploaded images -->
                             <div class="row">
                                 <div class="col-md-4">
@@ -195,23 +219,21 @@
                     <div class="bg-white p-3">
                         <div class="form-group">
                             <label for="category">Category:</label>
-                            <select class="form-control bg-light" id="category" name="Category" required>
-                                <option value="MEN'S WATCHES" <%= product.Category === "MEN'S WATCHES" ? 'selected' : '' %>>MEN'S WATCHES</option>
-                                <option value="KID'S WATCHES" <%= product.Category === "KID'S WATCHES" ? 'selected' : '' %>>KID'S WATCHES</option>
-                                <option value="WOMEN'S WATCHES" <%= product.Category === "WOMEN'S WATCHES" ? 'selected' : '' %>>WOMEN'S WATCHES</option>
-                                <option value="PERFUMES" <%= product.Category === "PERFUMES" ? 'selected' : '' %>>PERFUMES</option>
-                                <option value="WALLETS" <%= product.Category === "WALLETS" ? 'selected' : '' %>>WALLETS</option>
+                            <select class="form-select bg-light" id="category" name="Category" required>
+                                <% categories.forEach(function(category) { %>
+                                <option value="<%=category.Name%>"><%=product.Category === "category.Name" ? 'selected' : '' %>><%=category.Name%> </option>
+                                <% }); %>
                             </select>
                         </div><br>
                         <div class="form-group">
                             <br>
                             <label for="brandName">Brand Name:</label>
                             <select name="BrandName" class="form-select bg-light" id="brand" required>
-                                <option value="FASTRACK" <%= product.BrandName === "FASTRACK" ? 'selected' : '' %>>FASTRACK</option>
-                                <option value="TITAN" <%= product.BrandName === "TITAN" ? 'selected' : '' %>>TITAN</option>
-                                <option value="ROLEX" <%= product.BrandName === "ROLEX" ? 'selected' : '' %>>ROLEX</option>
-                                <option value="FOGG"<%= product.BrandName === "FOGG" ? 'selected' : '' %>>FOGG</option>
+                                <% brands.forEach(function(brand) { %>
+                                    <option value="<%=brand.Name%>"><%=product.BrandName === "brand.Name" ? 'selected' : ''%><%=brand.Name%></option>
+                                    <% }); %>
                             </select>
+                            
                         </div><br>
                         <div class="form-group">
                             <label for="tags">Tags:</label>

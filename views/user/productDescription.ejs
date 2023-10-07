@@ -1,33 +1,38 @@
 <%-include('../layouts/header')%>
 <%- include('../partials/user-header')%>
     <div class="container">
-        <div class="row">
-            <!-- Product Images -->
-            <!-- Cover Image -->
+        <div class="row tickerTimes">
             <% if (product){%>
             <div class="col-sm-4">
-                <!-- Product Cover -->
                 <div class="product-cover col-sm-12" id="img-container">
                     <img src="/uploads/<%= product.images[0] %>" alt="Cover Image" class="img-fluid" id="selectedImage">
                 </div>
-            
-                <!-- Product Thumbnails -->
-                <div class="product-images col-2 col-sm-4 mt-4 d-flex">
+                <div class="product-images col-2 col-sm-3 mt-4 d-flex gap-3">
                     <% if (product.images && product.images.length > 0) { %>
                         <% for (let i = 0; i < product.images.length; i++) { %>
-                            <img src="/uploads/<%= product.images[i] %>" alt="Product Image <%= i + 1 %>" class="img-thumbnail" onclick="selectImage(this)">
+                            <img src="/uploads/<%= product.images[i] %>" alt="Product Image <%= i + 1 %>" class="img-thumbnail rounded float-start" onclick="selectImage(this)">
                         <% } %>
                     <% } %>
                 </div>
             </div>
-            <!-- Product Info -->
-            <div class=" col-sm-8">
-                <div class="product-info icons">
-                    <h2><%=product.ProductName%></h2>
-                    <p>Rating: 4.5 (100 reviews)</p>
-                    <p>Price:<span class="text-decoration-line-through"><%=product.Price%>/-</span> <%=product.DiscountAmount%>/-</p>
-                    <p><%=product.Description%></p>
-                </div>
+
+            <div class=" col-sm-5 mt-4 tickerDescription">
+                <div class="card border-dark">
+                    <div class="card-body">
+                      <h1 class="card-title tickerTimes"><%= product.ProductName %></h1>
+                      <p class="card-text mt-5 tickerDescription">Rating: 4.5 (100 reviews)</p>
+                      <p class="card-text mt-5">
+                        Price:
+                        <span class="text-decoration-line-through"><%= product.Price %>/-</span>
+                        <%= product.DiscountAmount %>/-
+                      </p>
+                      <p class="card-text tickerDescription mt-5"><%= product.Description %></p>
+                    </div>
+                    <div class="mt-5 mb-5 ms-2">
+                        <a href=""><button class="btn btn-outline-danger mt-2">Add to Wishlist <i class="fas fa-heart"></i></button></a>        
+                        <a href="/addtocart/<%=product._id%>"><button class="btn btn btn-outline-success mt-2">Add to Cart <i class="fas fa-cart-shopping"></i></button></a>
+                    </div>
+                  </div>
 
                 <!-- Color Variants -->
                 <!-- <h4>Color Variants:</h4>
@@ -57,30 +62,28 @@
                         </div>
                     </div>
                 </div> -->
-                <button class="btn btn-primary mt-2">Add to Cart</button>
-                <button class="btn btn-danger mt-2">Add to Wishlist</button>        
+                
             </div>
-            <div class="col-sm-12 mt-4 icons">
+            <div class="col-sm-12 mt-4 tickerTimes">
                 <div class="text-center">
-                    <h3>Product Specification</h3>
+                    <h1>Product Specification</h1>
                 </div>
                 <div>
-                    <!-- List without bullets -->
-                    <ul class="list">
-                        <li><%=product.Specification1 %></li>
-                        <li><%=product.Specification2 %></li>
-                        <li><%=product.Specification3 %></li>
-                        <li><%=product.Specification4 %></li>
+                    <ul class="list tickerDescription">
+                        <li class="mt-3"><%=product.Specification1 %></li>
+                        <li class="mt-3"><%=product.Specification2 %></li>
+                        <li class="mt-3"><%=product.Specification3 %></li>
+                        <li class="mt-3"><%=product.Specification4 %></li>
                     </ul>
                 </div>
             </div>
     
             <!-- New Section: Cards -->
             <div class="col-sm-12 mt-4">
-                <div class="text-center icons">
-                    <h3>Reviews</h3>
+                <div class="text-center">
+                    <h1>Reviews</h1>
                 </div>
-                <div class="row">
+                <div class="row tickerDescription">
                     <!-- Card 1 -->
                     <div class="col-sm-6 mb-3">
                         <div class="card">
@@ -175,6 +178,12 @@
             <%}%>
         </div>
     </div>
+    <style>
+        #img-container {
+  position: relative; /* Ensure it's a positioned element */
+  z-index: 1; /* Set a higher z-index value */
+}
+    </style>
 
 <%- include('../partials/user-footer')%>
 <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>

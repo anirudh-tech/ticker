@@ -26,10 +26,9 @@ module.exports = {
         Email: Email,
         otp: otpToBeSent,
         createdAt: Date.now(),
-        expiresAt: Date.now() + duration * 60000, // Convert hours to milliseconds
+        expiresAt: Date.now() + duration * 60000,
       });
 
-      // Save the OTP record to the database
       const createdOTPRecord = await newOTP.save();
 
       // Mail data

@@ -1,16 +1,17 @@
 <%-include('../layouts/header')%>
 <%- include('../partials/admin-header')%>
-<div class="container" style="margin-left: 17%;width: 82%; margin-top: 6%;">
+<div class="container">
     <div class="d-flex justify-content-between align-items-center">
         <h2>USER LIST</h2>
-    </div>
-
-    <div class="table-responsive mt-4">
-        <div class="d-flex justify-content-end align-items-center">
-            <div class="form-group me-2">
-                <input type="text" class="form-control" placeholder="Search">
-            </div>
+        <div class="form-group  d-flex">
+          <div class="me-2">
+            <input type="text" class="form-control" placeholder="Search">
+          </div>
             <button class="btn btn-secondary me-2">SEARCH USER</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <div class="d-flex justify-content-end align-items-center">
         </div>
 
         <table class="table table-bordered table-shadow mt-3">
@@ -30,9 +31,9 @@
                       <td><%= user.Status %></td>
                       <td>
                         <% if (user.Status === 'Active') { %>
-                            <a href="/admin/userlist/<%=user._id%>"><button class="btn btn-success " >Block</button></a>
+                            <a href="/admin/userlist/<%=user._id%>"><button onclick="return confirm('Are you sure you want to  block the user')" class="btn btn-success " >Block</button></a>
                         <% } else if (user.Status === 'Blocked') { %>
-                            <a href="/admin/userlist/<%=user._id%>"><button class="btn btn-danger">Unblock</button></a>
+                            <a href="/admin/userlist/<%=user._id%>"><button onclick="return confirm('Are you sure you want to  unblock the user')" class="btn btn-danger">Unblock</button></a>
                         <% } %>
                       </td>
                     </tr>

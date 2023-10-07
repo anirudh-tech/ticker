@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const {Schema,ObjectId} = mongoose 
 const ProductsSchema = new mongoose.Schema({
   
   ProductName: {
@@ -15,7 +15,7 @@ const ProductsSchema = new mongoose.Schema({
     required: true,
   },
   BrandName: {
-    type: String,
+    type: Schema.Types.ObjectId,
     required: true,
   },
   Tags: {
@@ -30,7 +30,7 @@ const ProductsSchema = new mongoose.Schema({
     required: true,
   },
   Category: {
-    type: String,
+    type: Schema.Types.ObjectId,
     required: true,
   },
   DiscountAmount: {
@@ -38,13 +38,13 @@ const ProductsSchema = new mongoose.Schema({
   },
   Status: {
     type: String,
-    required: true
+    required: true,
   },
   Variation: {
     type: String,
   },
   UpdatedOn: {
-    type: Date
+    type: String
   },
   Display: {
     type: String,

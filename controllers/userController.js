@@ -1,11 +1,13 @@
-const User = require("../models/userSchema");
 const OTP = require("../models/otpSchema");
+const User = require('../models/userSchema') 
 const otpFunctions = require("../utility/otpFunctions");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Product = require("../models/productSchema");
 const Category = require("../models/categorySchema");
-const flash  = require("express-flash");
+const Cart = require("../models/cartSchema");
+const flash = require("express-flash");
+const mongoose = require("mongoose");
 module.exports = {
   initial: (req, res) => {
     try {
@@ -75,7 +77,7 @@ module.exports = {
   otpAuth: async (req, res, next) => {
     try {
       let { otp } = req.body;
-      
+
       console.log(req.session.user.Email);
       const matchedOTPrecord = await OTP.findOne({
         Email: req.session.user.Email,
@@ -159,8 +161,6 @@ module.exports = {
     }
   },
 
-
-  
   getUserLogin: (req, res) => {
     res.render("user/log-in", { error: req.session.error });
   },
@@ -191,8 +191,8 @@ module.exports = {
           req.flash("error", "invalid username or password");
           res.redirect("/login");
         }
-      }else{
-        req.flash("error","You have been banned")
+      } else {
+        req.flash("error", "You have been banned");
         res.redirect("/login");
       }
     } catch (error) {
@@ -203,8 +203,10 @@ module.exports = {
   },
 
   home: async (req, res) => {
-    const categories = await Category.find()
-    const products = await Product.find( {Display:"Active"}).sort({_id: -1}).limit(8)
+    const categories = await Category.find();
+    const products = await Product.find({ Display: "Active" })
+      .sort({ _id: -1 })
+      .limit(8);
     console.log(categories);
     console.log(products);
     res.render("user/homepage", {
@@ -216,10 +218,12 @@ module.exports = {
 
   getProduct: async (req, res) => {
     const _id = req.params._id;
+    const userId = req.session.user.user;
+    const user = await User.findById(userId);
     const product = await Product.find({ _id }).exec();
     if (product) {
       res.render("user/productDescription", {
-        user: req.session.user,
+        user,
         product: product[0],
       });
     }
@@ -231,65 +235,71 @@ module.exports = {
     res.redirect("/login");
   },
 
-
-  getForgotPassword: async (req,res)=>{
-    res.render('user/forgotPassword',{messages:req.flash(),Email:req.session.Email})
+  getForgotPassword: async (req, res) => {
+    res.render("user/forgotPassword", {
+      messages: req.flash(),
+      Email: req.session.Email,
+    });
   },
 
-  postForgotPassword: async (req,res)=>{
+  postForgotPassword: async (req, res) => {
     try {
-      req.session.Email = req.body.Email
-      const Email = req.body.Email
-      const userData = await User.findOne({Email:Email})
-      if(userData){
+      req.session.Email = req.body.Email;
+      const Email = req.body.Email;
+      const userData = await User.findOne({ Email: Email });
+      if (userData) {
         otpToBeSent = otpFunctions.generateOTP();
-        const result = otpFunctions.passwordSendOTP(req, res, Email, otpToBeSent);
-      }else{
-        req.flash("error","Email not registered")
-        res.redirect('/forgotpassword')
+        const result = otpFunctions.passwordSendOTP(
+          req,
+          res,
+          Email,
+          otpToBeSent
+        );
+      } else {
+        req.flash("error", "Email not registered");
+        res.redirect("/forgotpassword");
       }
     } catch (error) {
       console.log(error);
-      res.redirect('/login')
+      res.redirect("/login");
     }
   },
 
-  getOtpVerification: async (req,res)=>{
-    const Email = req.session.Email
-    console.log(Email)
-    setTimeout(()=>{
-      OTP.deleteOne({Email:Email})
+  getOtpVerification: async (req, res) => {
+    const Email = req.session.Email;
+    console.log(Email);
+    setTimeout(() => {
+      OTP.deleteOne({ Email: Email })
         .then(() => {
           console.log("Document deleted successfully");
         })
         .catch((err) => {
           console.error(err);
-        })
-    },30000)
-    res.render('user/otpVerification')
+        });
+    }, 30000);
+    res.render("user/otpVerification");
   },
 
-  postOtpVerification: async (req,res)=>{
+  postOtpVerification: async (req, res) => {
     try {
       const user = await User.findOne({ Email: req.session.Email });
       console.log(user);
       if (user.Status === "Active") {
-            const accessToken = jwt.sign(
-              { user: user._id },
-              process.env.ACCESS_TOKEN_SECRET,
-              { expiresIn: 60 * 60 }
-            );
-            res.cookie("userJwt", accessToken, { maxAge: 60 * 1000 * 60 });
-            req.session.user = user;
-            res.redirect("/homepage");
-        } else {
-          req.flash("error", "error sending otp");
-          res.redirect("/login");
-        }
+        const accessToken = jwt.sign(
+          { user: user._id },
+          process.env.ACCESS_TOKEN_SECRET,
+          { expiresIn: 60 * 60 }
+        );
+        res.cookie("userJwt", accessToken, { maxAge: 60 * 1000 * 60 });
+        req.session.user = user;
+        res.redirect("/homepage");
+      } else {
+        req.flash("error", "error sending otp");
+        res.redirect("/login");
       }
-     catch (error) {
-      console.log(error)
-      res.redirect('/login')
+    } catch (error) {
+      console.log(error);
+      res.redirect("/login");
     }
   },
   passwordOtpAuth: async (req, res, next) => {
@@ -332,24 +342,154 @@ module.exports = {
   PasswordResendOtp: async (req, res) => {
     try {
       console.log(req.session.Email);
-        const duration = 5;
-        const Email = req.session.Email;
-        otpToBeSent = otpFunctions.generateOTP();
-        console.log(otpToBeSent);
-        await OTP.create(
-          {
-            Email: req.session.Email,
-            otp: otpToBeSent,
-            createdAt: Date.now(),
-            expiresAt: Date.now() + duration * 60000,
-          }
-        );
-        console.log("ivdeee ethi");
-        const result = otpFunctions.passwordResendOTP(req, res, Email, otpToBeSent);
+      const duration = 5;
+      const Email = req.session.Email;
+      otpToBeSent = otpFunctions.generateOTP();
+      console.log(otpToBeSent);
+      await OTP.create({
+        Email: req.session.Email,
+        otp: otpToBeSent,
+        createdAt: Date.now(),
+        expiresAt: Date.now() + duration * 60000,
+      });
+      console.log("ivdeee ethi");
+      const result = otpFunctions.passwordResendOTP(
+        req,
+        res,
+        Email,
+        otpToBeSent
+      );
     } catch (error) {
       console.log(error);
       req.flash("error", "error sending OTP");
       res.redirect("/forgotpassword");
     }
+  },
+
+  cart: async (req, res) => {
+    const userId = req.session.user.user;
+    const user = await User.findById(userId);
+    const cart = await Cart.findOne({ UserId: userId }).populate(
+      "Items.ProductId"
+    );
+
+    console.log(cart);
+    res.render("user/cart", { user, cart });
+  },
+
+  postCart: async (req,res)=>{
+    res.redirect('/checkout')
+  },
+
+  getCheckout: async (req,res)=>{
+    const userId = req.session.user.user;
+    const user = await User.findById(userId);
+    res.render('user/checkout',{user})
+  },
+
+  postAddressForm: async (req,res)=>{
+    const userId = req.session.user.user;
+    const address = await User.findByIdAndUpdate(userId,{$push:{Address: req.body}},{new: true})
+    console.log(address);
+  },
+
+
+  getEditAddress: async (req,res)=>{
+    const userId = req.session.user.user;
+    const user = await User.findById(userId);
+    res.render('user/editAddress',{user})
+  },
+
+  postEditAddress: async (req,res)=>{
+
+  },
+
+  addToCart: async (req, res) => {
+    const userId = req.session.user.user;
+    const productId = req.params._id;
+    console.log(userId);
+    const userCart = await Cart.findOne({ UserId: userId });
+    if (userCart) {
+      const existingCart = userCart.Items.find((item) =>
+        item.ProductId.equals(productId)
+      );
+      if (existingCart) {
+        existingCart.Quantity += 1;
+      } else {
+        userCart.Items.push({ ProductId: productId, Quantity: 1 });
+      }
+      await userCart.save();
+    } else {
+      const newCart = new Cart({
+        UserId: userId,
+        Items: [{ ProductId: productId, Quantity: 1 }],
+      });
+      console.log(newCart);
+      await newCart.save();
+    }
+    res.redirect("/cart");
+  },
+
+  updatingQuantity: async (req, res) => {
+    try {
+      const { productId, change } = req.body;
+
+      const userId = req.session.user.user;
+
+      const userCart = await Cart.findOne({ UserId: userId });
+      const product = await Product.findById(productId);
+      if (!userCart || !product) {
+        return res.status(404).json({ error: "Product or cart not found" });
+      }
+      const cartItem = userCart.Items.find((item) =>
+        item.ProductId.equals(productId)
+      );
+      if (!cartItem) {
+        return res.status(404).json({ error: "Product or cart not found" });
+      }
+      const newQuantity = cartItem.Quantity + parseInt(change);
+      if (newQuantity < 1) {
+        userCart.Items = userCart.Items.filter(
+          (item) => !item.ProductId.equals(productId)
+        );
+      } else {
+        cartItem.Quantity = newQuantity;
+      }
+
+      await userCart.save();
+      res.json({ message: "Quantity updated successfully", newQuantity });
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+
+  profile: async (req, res) => {
+    const userId = req.session.user.user;
+    const user = await User.findById(userId);
+    console.log(req.session.user);
+    res.render("user/userProfile", { user });
+  },
+
+  removeFromCart: async (req, res) => {
+    const userId = req.session.user.user;
+    const user = await User.findById(userId);
+    const productId = req.params._id;
+
+    const updatedCart = await Cart.findOneAndUpdate(
+      { UserId: user },
+      { $pull: { Items: { ProductId: productId } } },
+      { new: true }
+    );
+    console.log("delete : ", updatedCart);
+    res.redirect("/cart");
+  },
+
+
+  addAddress: async (req,res)=>{
+    const userId = req.session.user.user;
+    const user = await User.findById(userId);
+    res.render('user/addaddress',{user})
+
   },
 };

@@ -1,9 +1,10 @@
 const User = require("../models/userSchema");
 const Product = require("../models/productSchema");
 const Category = require("../models/categorySchema");
-const Brand = require("../models/brandSchema")
+const Brand = require("../models/brandSchema");
 const flash = require("express-flash");
 const Admin = require("../models/adminSchema");
+const moment = require("moment");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -15,7 +16,6 @@ module.exports = {
   //   const adminData = await Admin.create({Email:Email,Password:hashedPassword})
   //   console.log("created");
   // },
-
 
   initial: (req, res) => {
     res.redirect("/admin/login");
@@ -30,7 +30,7 @@ module.exports = {
       const Email = req.body.Email;
       console.log(req.body.Email);
       const Password = req.body.Password;
-      const admin = await Admin.findOne({Email: Email});
+      const admin = await Admin.findOne({ Email: Email });
       console.log(admin);
       if (admin.Status === "Active") {
         const matchedPassword = await bcrypt.compare(Password, admin.Password);
@@ -47,9 +47,9 @@ module.exports = {
           console.log(error);
           res.redirect("/admin/login");
         }
-      }else{
-          console.log(error);
-          res.redirect("/admin/login")
+      } else {
+        console.log(error);
+        res.redirect("/admin/login");
       }
     } catch (error) {
       console.log(error);
@@ -82,19 +82,19 @@ module.exports = {
   },
 
   getAddProduct: async (req, res) => {
-    const categories = await Category.find()
-    const brands = await Brand.find()
-    res.render("admin/addProduct",{categories,brands});
+    const categories = await Category.find();
+    const brands = await Brand.find();
+    res.render("admin/addProduct", { categories, brands });
   },
 
   postAddProduct: async (req, res) => {
-    console.log(req.body);
-    console.log(req.files);
     try {
+      console.log(req.files);
+      const images = [];
       const productType = req.body.productType;
-
       const variations = [];
-
+      const category = await Category.findOne({Name:req.body.Category})
+      const BrandName = await Brand.findOne({Name:req.body.BrandName})
       if (productType === "watches") {
         const watchColors = req.body.watches;
         variations.push({ value: watchColors });
@@ -102,12 +102,33 @@ module.exports = {
         const perfumeQuantity = req.body.perfumes;
         variations.push({ value: perfumeQuantity });
       }
-      req.body.Variation = variations[0].value;
-      req.body.images = req.files.map((val) => val.filename);
-      req.body.Status = "In stock";
-      req.body.Display = "Active";
-      req.body.UpdatedOn = new Date();
-      const uploaded = await Product.create(req.body);
+
+      for (let i = 1; i <= 3; i++) {
+        const fieldName = `image${i}`;
+        if (req.files[fieldName] && req.files[fieldName][0]) {
+          images.push(req.files[fieldName][0].filename);
+        }
+      }
+      const newProduct = new Product({
+        ProductName: req.body.ProductName,
+        Price: req.body.Price,
+        Description: req.body.Description,
+        BrandName: BrandName._id,
+        Tags: req.body.Tags,
+        AvailableQuantity: req.body.AvailableQuantity,
+        Category: category._id,
+        Status:"In Stock",
+        Display: "Active",
+        Specification1: req.body.Specification1,
+        Specification2: req.body.Specification2,
+        Specification3: req.body.Specification3,
+        Specification4: req.body.Specification4,
+        DiscountAmount: req.body.DiscountAmount,
+        Variation: variations[0].value,
+        UpdatedOn: moment(new Date()).format("llll"),
+        images:images
+      });
+      newProduct.save()
       res.redirect("/admin/product");
     } catch (error) {
       console.log(`An error happened ${error}`);
@@ -116,9 +137,12 @@ module.exports = {
 
   getEditProduct: async (req, res) => {
     const _id = req.params._id;
+    const categories = await Category.find();
+    const brands = await Brand.find();
     const product = await Product.find({ _id });
     console.log(product);
-    res.render("admin/editProduct", { product: product[0] });
+
+    res.render("admin/editProduct", { product: product[0] ,categories,brands});
   },
 
   getUser: async (req, res) => {
@@ -189,12 +213,22 @@ module.exports = {
 
   postEditProduct: async (req, res) => {
     const _id = req.params._id;
-    console.log(req.body);
     console.log(req.files);
     try {
+      const images = [];
       const productType = req.body.productType;
 
       const variations = [];
+
+      for (let i = 1; i <= 3; i++) {
+        const fieldName = `image${i}`;
+        if (req.files[fieldName] && req.files[fieldName][0]) {
+          images.push(req.files[fieldName][0].filename);
+        }
+      }
+
+      const category = await Category.findOne({Name:req.body.Category})
+      const BrandName = await Brand.findOne({Name:req.body.BrandName})
 
       if (productType === "watches") {
         const watchColors = req.body.watches;
@@ -203,11 +237,15 @@ module.exports = {
         const perfumeQuantity = req.body.perfumes;
         variations.push({ value: perfumeQuantity });
       }
-      req.body.Variation = variations[0].value;
-      req.body.images = req.files.map((val) => val.filename);
-      req.body.Status = "In stock";
-      req.body.Display = "Active";
-      req.body.UpdatedOn = new Date();
+
+      req.body.Variation = variations[0].value
+      req.body.Category = category._id
+      req.body.BrandName = BrandName._id
+      req.body.images = images
+
+      // Process uploaded images
+      
+
       const uploaded = await Product.findByIdAndUpdate(_id, req.body);
       res.redirect("/admin/product");
     } catch (error) {
@@ -218,7 +256,7 @@ module.exports = {
   getCategoriesAndBrands: async (req, res) => {
     const categories = await Category.find();
     const brands = await Brand.find();
-    res.render("admin/categoriesAndBrands", { categories,brands });
+    res.render("admin/categoriesAndBrands", { categories, brands });
   },
 
   getAddCategory: async (req, res) => {
@@ -244,20 +282,19 @@ module.exports = {
     res.render("admin/editCategory", { category });
   },
 
-  getAddBrand: (req,res)=>{
-    res.render("admin/addBrand")
+  getAddBrand: (req, res) => {
+    res.render("admin/addBrand");
   },
 
-  postAddBrand: async (req,res) => {
+  postAddBrand: async (req, res) => {
     try {
-      const brands = await Brand.create(req.body)
-      res.redirect("/admin/categoriesandbrands")
+      const brands = await Brand.create(req.body);
+      res.redirect("/admin/categoriesandbrands");
     } catch (error) {
       console.log(error);
       req.flash("error", "Error Adding the Brand");
       res.redirect("/admin/categoriesandbrands");
     }
-
   },
 
   getAdminLogout: (req, res) => {

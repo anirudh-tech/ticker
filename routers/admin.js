@@ -19,7 +19,7 @@ router.route("/product")
 
 router.route('/editproduct/:_id')
     .get(adminAuth.adminTokenAuth,adminController.getEditProduct)
-    .post(upload.array('images',3),adminController.postEditProduct)
+    .post(upload.fields([{ name: 'image1', maxCount: 1 }, { name: 'image2', maxCount: 1 }, { name: 'image3', maxCount: 1 }]),adminController.postEditProduct)
 
 router.route('/userslist')
     .get(adminAuth.adminTokenAuth,adminController.getUser)
@@ -48,7 +48,7 @@ router.route('/edit/:_id')
 
 router.route("/addproduct")
     .get(adminAuth.adminTokenAuth,adminController.getAddProduct)
-    .post(upload.array('images',3),adminController.postAddProduct)
+    .post(upload.fields([{ name: 'image1', maxCount: 1 }, { name: 'image2', maxCount: 1 }, { name: 'image3', maxCount: 1 }]),adminController.postAddProduct)
 
 
 router.route("/addbrand")

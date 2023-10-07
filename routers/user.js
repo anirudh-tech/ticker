@@ -54,6 +54,34 @@ router.route('/passwordResendOtp')
     .get(userAuth.userExist,userController.PasswordResendOtp)
 
 
+router.route('/addtocart/:_id')
+    .get(userAuth.userTokenAuth ,userController.addToCart)
+
+router.route('/cart')
+    .get(userAuth.userTokenAuth,userController.cart)
+    .post(userAuth.userTokenAuth,userController.postCart)
+
+router.route('/checkout')
+    .get(userAuth.userTokenAuth,userController.getCheckout)
+
+
+router.route('/addAddress')
+    .post(userAuth.userTokenAuth, userController.postAddressForm)
+
+router.route('/editAddress')
+    .get(userAuth.userTokenAuth,userController.getEditAddress)
+    .post(userAuth.userTokenAuth,userController.postEditAddress)
+
+router.route('/updateQuantity')
+    .post(userAuth.userTokenAuth,userController.updatingQuantity)
+
+router.route('/profile')
+    .get(userAuth.userTokenAuth,userController.profile)
+
+router.route('/removefromcart/:_id')
+    .get(userAuth.userTokenAuth, userController.removeFromCart)
+
+
 
 
 
