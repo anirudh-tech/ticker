@@ -2,6 +2,7 @@ const User = require("../models/userSchema");
 const Product = require("../models/productSchema");
 const Category = require("../models/categorySchema");
 const Brand = require("../models/brandSchema");
+const Order = require("../models/orderSchema")
 const flash = require("express-flash");
 const Admin = require("../models/adminSchema");
 const moment = require("moment");
@@ -296,10 +297,17 @@ module.exports = {
       res.redirect("/admin/categoriesandbrands");
     }
   },
+  
+  getOrders: async (req,res)=>{
+    const orders=await Order.find({})
+    res.render('admin/adminOrders',{orders})
+  },
+
 
   getAdminLogout: (req, res) => {
     req.session.admin = false;
     res.clearCookie("adminJwt");
     res.redirect("/admin/login");
   },
+
 };

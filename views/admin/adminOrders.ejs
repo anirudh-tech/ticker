@@ -1,0 +1,57 @@
+<%- include('../layouts/header')%>
+<%- include('../partials/admin-header')%>
+
+<section>
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Order Details</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Payment Status</th>
+                            <th>Total Amount</th>
+                            <th>Payment Method</th>
+                            <th>Order Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% orders.forEach(order => { %>
+                        <tr>
+                            <td><%= order._id %></td>
+                            <td></td>
+                            <td><%= order.paymentStatus %></td>
+                            <td><%= order.totalAmount%></td>
+                            <% if (order.paymentMethod === "COD"){ %>
+                            <td>Cash on Delivery</td>
+                            <% } else { %>
+                            <td>Paypal</td>
+                            <%}%>
+                            <td>
+                                <select class="form-select">
+                                    <option value="processing">Processing</option>
+                                    <option value="shipped">Shipped</option>
+                                    <option value="delivered">Delivered</option>
+                                    <option value="cancelled">Cancelled</option>
+                                    <option value="refunded">Refunded</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary">Update</button>
+                                <button class="btn btn-success">Show Details</button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                        <!-- Add more rows for other orders as needed -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<%- include('../layouts/footer') %>

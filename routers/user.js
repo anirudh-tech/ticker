@@ -11,10 +11,15 @@ router.route('/')
 router.route('/homepage')
     .get(userController.home)
 
+router.route('/shop')
+    .get(userAuth.userTokenAuth,userController.getShop)
 
-// router.route('/signup')
-//     .get(userController.signup)
-//     .post(userController.insertuser)
+router.route('/category/:_id')
+    .get(userAuth.userTokenAuth,userController.getShop)
+
+
+router.route('/brand/:_id')
+    .get(userAuth.userTokenAuth,userController.getShop)
 
 router.route('/signup')
     .get(userAuth.userTokenAuth,userController.getUserSignup)
@@ -27,7 +32,7 @@ router.route('/product/:_id')
 
 
 router.route('/emailVerification')
-    .get(userController.getEmailVerification)
+    .get(userAuth.userExist,userController.getEmailVerification)
     .post(userController.otpAuth,userController.postEmailVerification)
 
 
@@ -63,10 +68,18 @@ router.route('/cart')
 
 router.route('/checkout')
     .get(userAuth.userTokenAuth,userController.getCheckout)
+    .post(userAuth.userTokenAuth,userController.postCheckout)
+
+
+router.route('/orderSuccess')
+    .get(userAuth.userTokenAuth,userController.getOrderSucces)
 
 
 router.route('/addAddress')
     .post(userAuth.userTokenAuth, userController.postAddressForm)
+
+router.route('/addAddress-Checkout')
+    .post(userAuth.userTokenAuth,userController.addAddressCheckout)
 
 router.route('/editAddress')
     .get(userAuth.userTokenAuth,userController.getEditAddress)
@@ -81,6 +94,9 @@ router.route('/profile')
 router.route('/removefromcart/:_id')
     .get(userAuth.userTokenAuth, userController.removeFromCart)
 
+
+router.route("/trackOrder")
+    .get(userAuth.userTokenAuth,userController.getTrackOrder)
 
 
 

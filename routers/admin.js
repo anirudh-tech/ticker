@@ -43,6 +43,9 @@ router.route('/addcategory')
 router.route('/edit/:_id')
     .get(adminAuth.adminTokenAuth,adminController.getEditCategory)
 
+router.route("/order")
+    .get(adminAuth.adminTokenAuth,adminController.getOrders)
+
 
 
 

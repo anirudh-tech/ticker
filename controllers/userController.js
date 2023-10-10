@@ -6,6 +6,10 @@ const jwt = require("jsonwebtoken");
 const Product = require("../models/productSchema");
 const Category = require("../models/categorySchema");
 const Cart = require("../models/cartSchema");
+const Order = require("..//models/orderSchema")
+const Brand = require("../models/brandSchema")
+const moment = require("moment");
+const nodemailer = require("nodemailer");
 const flash = require("express-flash");
 const mongoose = require("mongoose");
 module.exports = {
@@ -203,17 +207,41 @@ module.exports = {
   },
 
   home: async (req, res) => {
+    console.log(req.session.user);
     const categories = await Category.find();
     const products = await Product.find({ Display: "Active" })
       .sort({ _id: -1 })
       .limit(8);
-    console.log(categories);
-    console.log(products);
     res.render("user/homepage", {
       user: req.session.user,
       products,
       categories,
     });
+  },
+
+  getShop: async (req,res)=>{
+    console.log(req.url);
+    console.log("inside getshop");
+    const userId = req.session.user.user;
+    const user = await User.findById(userId);
+    const categories = await Category.find();
+    const brands = await Brand.find();
+    const id = req.params._id
+    console.log(id);
+    
+    if(req.url === "/shop"){
+      const products = await Product.find({ Display: "Active" })
+      return res.render('user/shop',{user,categories,brands,products})
+    }
+    else if(req.url === `/category/${id}`){
+      console.log("inside category");
+      const products = await Product.find({ Category: id ,Display: "Active" })
+      res.render('user/shop',{user,categories,brands,products})
+    }else if(req.url === `/brand/${id}`){
+      console.log("inside brand");
+      const products = await Product.find({ BrandName: id ,Display: "Active" })
+      res.render('user/shop',{user,categories,brands,products})
+    }
   },
 
   getProduct: async (req, res) => {
@@ -372,12 +400,12 @@ module.exports = {
     const cart = await Cart.findOne({ UserId: userId }).populate(
       "Items.ProductId"
     );
-
     console.log(cart);
     res.render("user/cart", { user, cart });
   },
 
   postCart: async (req,res)=>{
+    req.session.totalPrice = req.body.totalPrice;
     res.redirect('/checkout')
   },
 
@@ -387,20 +415,89 @@ module.exports = {
     res.render('user/checkout',{user})
   },
 
+
+  postCheckout: async (req,res)=>{
+    console.log(req.body);
+     const PaymentMethod = req.body.paymentMethod
+     const Address = req.body.Address
+     const userId = req.session.user.user;
+     const user = await User.findById(userId);
+     const Email = user.Email
+     const cart = await Cart.findOne({UserId:userId}).populate("Items.ProductId")
+     console.log(req.session.totalPrice);
+
+
+     const newOrders = new Order({
+      UserId: userId,
+      Items: cart.Items,
+      OrderDate: moment(new Date()).format('llll') ,
+      TotalPrice: req.session.totalPrice,
+      Address: Address,
+      PaymentMethod: PaymentMethod
+     })
+     //delete the items in the cart after checkout  
+     await  Cart.findByIdAndDelete(cart._id)
+     //save order to database
+     const order = await  newOrders.save();
+     console.log(order,"in orders");
+     req.session.orderId = order._id
+
+     //send email with details of orders
+     const transporter = nodemailer.createTransport({
+      port: 465,
+      host: "smtp.gmail.com",
+      auth: {
+        user: "tickerpage@gmail.com",
+        pass: "vfte pvyn gvat uylk",
+      },
+      secure: true,
+    });
+    const mailData = {
+      from: "tickerpage@gmail.com",
+      to: Email,
+      subject:'Your Orders!' ,
+      text:`Hello! ${user.Username} Your order has been received and will be processed within one business day.`+
+      ` your total price is ${req.session.totalPrice}`
+    };
+    transporter.sendMail(mailData, (error, info) => {
+      if (error) {
+        return console.log(error);
+      }
+      console.log("Success");
+    });
+    res.redirect('/orderSuccess')
+     console.log(cart.Items);
+  },
+
+  getOrderSucces: async (req,res)=>{
+    const userId = req.session.user.user;
+    const user = await User.findById(userId);
+    res.render('user/orderSuccess',{user})
+  },
+
   postAddressForm: async (req,res)=>{
     const userId = req.session.user.user;
     const address = await User.findByIdAndUpdate(userId,{$push:{Address: req.body}},{new: true})
     console.log(address);
+    res.redirect('/editAddress')
+  },
+
+  addAddressCheckout: async (req,res)=>{
+    const userId = req.session.user.user;
+    const address = await User.findByIdAndUpdate(userId,{$push:{Address: req.body}},{new: true})
+    res.redirect('/checkout')
   },
 
 
   getEditAddress: async (req,res)=>{
     const userId = req.session.user.user;
     const user = await User.findById(userId);
+    console.log(user.Address);
     res.render('user/editAddress',{user})
   },
 
   postEditAddress: async (req,res)=>{
+
 
   },
 
@@ -492,4 +589,15 @@ module.exports = {
     res.render('user/addaddress',{user})
 
   },
+
+  getTrackOrder: async (req,res)=>{
+    const userId = req.session.user.user;
+    const orderId = req.session.orderId
+    const order = await Order.findById(orderId).populate('Items.ProductId Items.Address')
+    const orderDetails = await Order.findById(orderId);
+    const user = await User.findById(userId);
+    console.log(orderDetails);
+    // console.log(order.Address);
+    res.render("user/trackOrder",{user,order})
+  }
 };
