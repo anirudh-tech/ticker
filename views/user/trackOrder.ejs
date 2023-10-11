@@ -2,14 +2,14 @@
 <%- include('../partials/user-header')%>
 
 <header>
-    <h1 class="text-center tickerTimes">ORDER DETAILS</h1>
+    <h2 class="text-center tickerTimes">ORDER DETAILS</h2>
 </header>
 
 
 
 <!-- Two Cards in One Row -->
 <div class="container">
-<div class="row">
+ <div class="row">
     <!-- Left Card: Items from Order -->
     <div class="col-md-8">
         <div class="card">
@@ -65,16 +65,22 @@
         </div>
     </div>
     
-</div>
-
-
-
-<!-- Shipping Address Card -->
-<div class="card mt-4">
-    <div class="card-header">SHIPPING INFORMATION</div>
-    <div class="card-body">
-        <h5><%=order.Address.Name%></h5>
+    
+    
+    
+    <!-- Shipping Address Card -->
+<div class="col-md-4">
+    <div class="card mt-4">
+        <div class="card-header">SHIPPING INFORMATION</div>
+            <div class="card-body">
+                <h5>Name: <%= address.Address[0].Name %></h5>
+                <p>City: <%= address.Address[0].City %></p>
+                <p>Pincode: <%= address.Address[0].Pincode %></p>
+                <p>State: <%= address.Address[0].State %></p>
+                <p>Mobile: <%= address.Address[0].Mobile %></p>
+            </div>
+        </div>
     </div>
-</div>
+ </div>
 </div>
 <%- include('../layouts/footer') %>

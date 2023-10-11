@@ -220,6 +220,12 @@ module.exports = {
   },
 
   getShop: async (req,res)=>{
+    const page = parseInt(req.query.page) || 1; // Get the page number from query parameters
+      const perPage = 10; // Number of items per page
+      const skip = (page - 1) * perPage;
+
+      const users = await User.find().skip(skip).limit(perPage);
+      const totalCount = await Product.countDocuments();
     console.log(req.url);
     console.log("inside getshop");
     const userId = req.session.user.user;
@@ -231,7 +237,11 @@ module.exports = {
     
     if(req.url === "/shop"){
       const products = await Product.find({ Display: "Active" })
-      return res.render('user/shop',{user,categories,brands,products})
+      return res.render('user/shop',{user,categories,brands,products,currentPage: page,
+        perPage,
+        totalCount,
+        totalPages: Math.ceil(totalCount / perPage),
+      })
     }
     else if(req.url === `/category/${id}`){
       console.log("inside category");
@@ -431,6 +441,7 @@ module.exports = {
       UserId: userId,
       Items: cart.Items,
       OrderDate: moment(new Date()).format('llll') ,
+      ExpectedDeliveryDate : moment().add(4, 'days').format('llll'),
       TotalPrice: req.session.totalPrice,
       Address: Address,
       PaymentMethod: PaymentMethod
@@ -441,6 +452,28 @@ module.exports = {
      const order = await  newOrders.save();
      console.log(order,"in orders");
      req.session.orderId = order._id
+
+     for (const item of order.Items) {
+      const productId = item.ProductId;
+      const quantity = item.Quantity;
+    
+      const product = await Product.findById(productId);
+    
+      if (product) {
+        const updatedQuantity = product.AvailableQuantity - quantity;
+    
+        if (updatedQuantity < 0) {
+          product.AvailableQuantity = 0;
+      product.Status = "Out of Stock";
+        } else {
+          // Update the product's available quantity
+          product.AvailableQuantity = updatedQuantity;
+    
+          // Save the updated product back to the database
+          await product.save();
+        }
+      }
+    }
 
      //send email with details of orders
      const transporter = nodemailer.createTransport({
@@ -496,9 +529,47 @@ module.exports = {
     res.render('user/editAddress',{user})
   },
 
-  postEditAddress: async (req,res)=>{
-
-
+  postEditAddress: async (req, res) => {
+    const addressId = req.params._id;
+    const userId = req.session.user.user;
+    const user = await User.findById(userId);
+    try {
+      if (user) {
+        const { Name, AddressLane, City, State, Pincode, Mobile } = req.body;
+  
+        // Find the index of the address in the Address array
+        const addressIndex = user.Address.findIndex((a) => a._id.toString() === addressId);
+  
+        if (addressIndex !== -1) {
+          // Update the fields of the existing address
+          user.Address[addressIndex].Name = Name;
+          user.Address[addressIndex].AddressLane = AddressLane;
+          user.Address[addressIndex].City = City;
+          user.Address[addressIndex].State = State;
+          user.Address[addressIndex].Pincode = Pincode;
+          user.Address[addressIndex].Mobile= Mobile;
+  
+          // Save the updated user document
+          await user.save();
+  
+          console.log('Address updated successfully');
+          req.flash("updated","Address updated successfully")
+          res.redirect('/editAddress')
+        //   res.status(200).send('Address updated successfully');
+        } else {
+          console.log('Address not found');
+          req.flash("notFound","Address not found")
+          res.redirect('/Address')
+        //   res.status(404).send('Address not found');
+        }
+      } else {
+        console.log('User not found');
+        // res.status(404).send('User not found');
+      }
+    } catch (error) {
+      console.error('Error updating address:', error.message);
+      res.status(500).send('Internal Server Error');
+    }
   },
 
   addToCart: async (req, res) => {
@@ -564,8 +635,11 @@ module.exports = {
   profile: async (req, res) => {
     const userId = req.session.user.user;
     const user = await User.findById(userId);
+    const orderCount = await Order.countDocuments({UserId: userId});
+    const cartCount = await Cart.countDocuments({UserId: userId});
+    const addressCount = await User.countDocuments();
     console.log(req.session.user);
-    res.render("user/userProfile", { user });
+    res.render("user/userProfile", { user , orderCount, cartCount, addressCount });
   },
 
   removeFromCart: async (req, res) => {
@@ -592,12 +666,61 @@ module.exports = {
 
   getTrackOrder: async (req,res)=>{
     const userId = req.session.user.user;
-    const orderId = req.session.orderId
-    const order = await Order.findById(orderId).populate('Items.ProductId Items.Address')
-    const orderDetails = await Order.findById(orderId);
     const user = await User.findById(userId);
-    console.log(orderDetails);
-    // console.log(order.Address);
-    res.render("user/trackOrder",{user,order})
+    console.log(userId);
+    const orderId = req.session.orderId
+    console.log(orderId);
+    const order = await Order.findById(orderId)
+      .populate('Items.ProductId')
+    const addressId = order.Address._id
+    const address = await User.findOne({ _id: userId}, {Address: { $elemMatch: { _id: addressId} } })
+    console.log(address,"address");
+    // console.log(Address,"address");
+    res.render("user/trackOrder",{user,order,address})
+  },
+
+  getOrderList: async (req,res)=>{
+    const userId = req.session.user.user;
+    const user = await User.findById(userId);
+    const order = await Order.find({UserId:userId})
+    res.render('user/orderList',{user,order})
+  },
+
+  getOrderDetails: async (req,res)=>{
+    const userId = req.session.user.user;
+    const user = await User.findById(userId);
+    const orderId=req.params._id;
+    const order=await Order.findById(orderId).populate('Items.ProductId')
+    const addressId = order.Address._id
+    const address = await User.findOne({ _id: userId}, {Address: { $elemMatch: { _id: addressId} } })
+    console.log(address,"address");
+    console.log(order,'order');
+    res.render('user/orderDetails',{user,order,address})
+  },
+
+  cancelOrder: async (req,res)=>{
+    const orderId = req.params._id;
+
+  try {
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      // Handle the case where the order with the given ID is not found
+      return res.status(404).send('Order not found');
+    }
+
+    if (order.Status === 'Order Placed' || order.Status === 'Shipped') {
+      order.Status = 'Cancelled';
+
+      await order.save();
+
+      return res.redirect('/orderList');
+    } else {
+      return res.status(400).send('Order cannot be cancelled');
+    }
+  } catch (error) {
+    console.error('Error cancelling the order:', error);
+    return res.status(500).send('Error cancelling the order');
+  }
   }
 };

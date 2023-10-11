@@ -4,7 +4,7 @@ const { Schema, ObjectId } = mongoose;
 
 const OrdersSchema = new Schema({
   UserId: { type: Schema.Types.ObjectId },
-  Status: { type: String, default:"Processing"},
+  Status: { type: String, default:"Order Placed"},
   Items: [{
      ProductId: { type: Schema.Types.ObjectId , ref: "Products" },
      Quantity: { type: Number },
@@ -14,7 +14,7 @@ const OrdersSchema = new Schema({
   TotalPrice: { type: Number },
   PaymentStatus: {type: String, default: "Pending"},
   CouponId: { type: Schema.Types.ObjectId },
-  Address: { type: Schema.Types.ObjectId, ref: "UserData" },
+  Address: { type: Schema.Types.ObjectId , ref :'User' },
 });
 
 const Orders = mongoose.model('Orders', OrdersSchema);

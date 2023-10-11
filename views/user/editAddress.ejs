@@ -54,7 +54,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form action="/editAddress" method="post">
+            <form action="/editAddress/<%=Address._id%>" method="post">
                 <div class="mb-3">
                     <label for="fullName" class="form-label">Full Name</label>
                     <input type="text" class="form-control" name="Name" value="<%=Address.Name%>"  id="fullName" placeholder="Enter your full name" required>
@@ -79,12 +79,11 @@
                     <label for="mobileNumber" class="form-label">Mobile Number</label>
                     <input type="tel" class="form-control" id="mobileNumber" name="Mobile" value="<%=Address.Mobile%>" placeholder="Enter your mobile number" required>
                   </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Submit</button>
               </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save Address</button>
         </div>
       </div>
     </div>
@@ -93,15 +92,15 @@
 
 <div class="container">
   <%if(user.Address.length > 0){%>
-    <% user.Address.forEach(function(Address) { %>
     <h1 class="text-center tickerTimes">User Addresses</h1>
+    <% user.Address.forEach(function(Address) { %>
     <div class="row">
         <div class="col-md-6">
-            <div class="card text-bg-dark mb-4">
+            <div class="card mb-4" style=" background: linear-gradient(to bottom right, rgb(248, 165, 165), rgb(255, 255, 176));">
                 <div class="card-body">
                     <h5 class="card-title"><%=Address.Name%></h5>
-                    <p class="card-text"><%=Address.AddressLane%></p>
-                    <p class="card-text"><%=Address.City%></p>
+                    <p class="card-text"><%=Address.AddressLane%></p>   
+                    <p class="card-text"><%=Address.City%></p>    
                     <p class="card-text"><%=Address.Pincode%></p>
                     <p class="card-text"><%=Address.State%></p>
                     <p class="card-text"><%=Address.Mobile%></p>

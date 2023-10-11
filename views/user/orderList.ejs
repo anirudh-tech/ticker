@@ -1,0 +1,60 @@
+<%- include('../layouts/header') %>
+<%- include('../partials/user-header') %>
+
+<style>
+  /* Style for the table rows */
+  table.table.table-bordered tbody tr {
+    border-radius: 0.5rem; /* Increase border radius for each row */
+    margin-bottom: 0.5rem; /* Add a gap between rows */
+  }
+</style>
+
+<div class="container mt-5">
+  <h2>Your Order List</h2>
+  <% if (order && order.length > 0) { %>
+    <table class="table table-bordered table-info">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Payment Method</th>
+          <th>Order Status</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <% order.forEach(function (order) { %>
+      <tbody >
+          <tr>
+            <td><%= order._id %></td>
+            <td><%= order.PaymentMethod %></td>
+            <td><%= order.Status %></td>
+            <td><%= order.OrderDate %></td>
+            <td>
+                <% if (order.Status === 'Delivered') { %>
+                    <a href="/order/details/<%= order._id %>" class="btn btn-primary">View Details</a>
+                    <a href="/order/return/<%= order._id %>" class="btn btn-danger">Return</a>
+                  <% } else if (order.Status === 'Order Placed' || order.Status === 'Shipped') { %>
+                    <a href="/order/details/<%= order._id %>" class="btn btn-primary">View Details</a>
+                    <% if (order.Status !== 'Cancelled') { %>
+                      <a href="/order/cancel/<%= order._id %>" class="btn btn-warning" onclick="confirmCancellation('<%= order._id %>')">Cancel Order</a>
+                    <% } %>
+                  <% } %>
+            </td>
+          </tr>
+        </tbody>
+        <% }); %>
+    </table>
+  <% } else { %>
+    <p>You have no orders yet.</p>
+  <% } %>
+</div>
+
+<%- include('../layouts/footer') %>
+<script>
+    function confirmCancellation(orderId) {
+      const confirmation = confirm('Are you sure you want to cancel this order?');
+      if (confirmation) {
+        window.location.href = '/order/cancel/' + orderId;
+      }
+    }
+  </script>

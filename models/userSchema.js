@@ -7,8 +7,6 @@ const Userschema = new Schema({
   Password: { type: String, required: true },
   Status: { type: String ,default:"Active"},
   
-  Orders: [{
-  }],
   Address: [{
      Name: {type: String},
      AddressLane: { type: String },
@@ -20,6 +18,6 @@ const Userschema = new Schema({
   Cart: [{
   }],
 });
-const User =  mongoose.model('UserData', Userschema);
+const User =  mongoose.model('User', Userschema);
 module.exports = User
 

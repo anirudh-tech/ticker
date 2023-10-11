@@ -110,6 +110,12 @@ module.exports = {
           images.push(req.files[fieldName][0].filename);
         }
       }
+      let Status;
+      if(req.body.AvailableQuantity <= 0 ){
+        Status = "Out of Stock"
+      }else{
+        Status="In Stock";
+      }
       const newProduct = new Product({
         ProductName: req.body.ProductName,
         Price: req.body.Price,
@@ -118,7 +124,7 @@ module.exports = {
         Tags: req.body.Tags,
         AvailableQuantity: req.body.AvailableQuantity,
         Category: category._id,
-        Status:"In Stock",
+        Status: Status,
         Display: "Active",
         Specification1: req.body.Specification1,
         Specification2: req.body.Specification2,
@@ -152,7 +158,7 @@ module.exports = {
       const perPage = 10; // Number of items per page
       const skip = (page - 1) * perPage;
 
-      const users = await User.find().skip(skip).limit(perPage).lean();
+      const users = await User.find().skip(skip).limit(perPage);
       const totalCount = await User.countDocuments();
 
       res.render("admin/manageUsers", {
@@ -242,8 +248,12 @@ module.exports = {
       req.body.Variation = variations[0].value
       req.body.Category = category._id
       req.body.BrandName = BrandName._id
-      req.body.images = images
-
+      if (images.length > 0) {
+        req.body.images = images;
+      }
+      if(req.body.AvailableQuantity <= 0){
+        req.body.Status = "Out of Stock"
+      }
       // Process uploaded images
       
 
@@ -277,6 +287,48 @@ module.exports = {
     }
   },
 
+  getOrderDetails: async (req,res)=>{
+    try {
+      const orderId = req.params._id
+      const orderDetails = await Order.findOne({_id:orderId}).populate('Items.ProductId')
+      res.render('admin/adminOrderDetails',{order:orderDetails})
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  putUpdateStatus: async (req,res)=>{
+    console.log("hereee");
+    const orderId = req.params.orderId;
+    const { status } = req.body;
+
+    try {
+        // Update the order status in the database
+        const updatedOrder = await Order.findByIdAndUpdate(orderId, { Status: status }, { new: true });
+
+        // If the status is "Delivered," update the payment status to "paid"
+        if (status.toLowerCase() === 'delivered') {
+            updatedOrder.PaymentStatus = 'Paid';
+        }else{
+            updatedOrder.PaymentStatus = 'Pending';
+        }
+
+        // If the status is "rejected," update the payment status to "order rejected"
+        if (status.toLowerCase() === 'rejected') {
+            updatedOrder.PaymentStatus = 'order rejected';
+        }
+
+        // Save the changes to the order
+        await updatedOrder.save();
+
+        // Respond with the updated order
+        res.json(updatedOrder);
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
+
   getEditCategory: async (req, res) => {
     const _id = req.params._id;
     const category = await Category.findById(_id);
@@ -299,8 +351,24 @@ module.exports = {
   },
   
   getOrders: async (req,res)=>{
-    const orders=await Order.find({})
-    res.render('admin/adminOrders',{orders})
+    const page = parseInt(req.query.page) || 1; // Get the page number from query parameters
+            const perPage = 10; // Number of items per page
+            const skip = (page - 1) * perPage;
+
+            // Query the database for products, skip and limit based on the pagination
+            const order = await Order.find()
+                .skip(skip)
+                .limit(perPage).lean();
+
+            const totalCount = await Order.countDocuments();
+
+            res.render('admin/adminOrders', {
+                order,
+                currentPage: page,
+                perPage,
+                totalCount,
+                totalPages: Math.ceil(totalCount / perPage),
+            });
   },
 
 

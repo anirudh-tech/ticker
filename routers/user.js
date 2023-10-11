@@ -83,6 +83,8 @@ router.route('/addAddress-Checkout')
 
 router.route('/editAddress')
     .get(userAuth.userTokenAuth,userController.getEditAddress)
+
+router.route('/editAddress/:_id')
     .post(userAuth.userTokenAuth,userController.postEditAddress)
 
 router.route('/updateQuantity')
@@ -93,6 +95,17 @@ router.route('/profile')
 
 router.route('/removefromcart/:_id')
     .get(userAuth.userTokenAuth, userController.removeFromCart)
+
+
+router.route('/orderList')
+    .get(userAuth.userTokenAuth,userController.getOrderList)
+
+
+router.route('/order/details/:_id')
+    .get(userAuth.userTokenAuth,userController.getOrderDetails)
+
+router.route('/order/cancel/:_id')
+    .get(userAuth.userTokenAuth,userController.cancelOrder)
 
 
 router.route("/trackOrder")

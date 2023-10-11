@@ -38,7 +38,11 @@ router.route('/addcategory')
     .get(adminAuth.adminTokenAuth,adminController.getAddCategory)
     .post(upload.single('image'),adminController.postAddCategory)
 
+router.route('/order/details/:_id')
+    .get(adminAuth.adminTokenAuth,adminController.getOrderDetails)
 
+router.route('/order/update-status/:orderId')
+    .put(adminAuth.adminTokenAuth,adminController.putUpdateStatus)
 
 router.route('/edit/:_id')
     .get(adminAuth.adminTokenAuth,adminController.getEditCategory)

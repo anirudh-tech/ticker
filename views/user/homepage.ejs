@@ -12,7 +12,7 @@
         <div class="row">
             <% categories.forEach(function(category) { %>
             <div class="col-2 icons">
-                <img class="img-fluid equal-width" src="/uploads/<%=category.image %>" alt="Image 1">
+                <a href="/category/<%= category._id %>"><img class="img-fluid equal-width" src="/uploads/<%=category.image %>" alt="Image 1"></a>
                 <%=category.Name%>
             </div>
             <% }); %>

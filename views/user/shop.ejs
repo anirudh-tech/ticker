@@ -1,6 +1,7 @@
 <%- include('../layouts/header')%>
 <%- include('../partials/user-header')%>
 <section>
+    <h1 class="text-center" style="text-shadow: 2px 2px 5px rgb(101, 226, 101); color:rgb(225, 65, 65)">SHOP</h1>
 <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
     <i class="fa-solid fa-sliders"></i>
     FILTERS
@@ -60,6 +61,21 @@
                 </div>
             <% }); %>
         </div>
+        <% if (products.length > 0) { %>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <p>Showing <%= (currentPage - 1) * perPage + 1 %>-
+                  <%= currentPage * perPage  %> results from <%= totalCount %></p>
+                <ul class="pagination">
+                  <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                      <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                    </li>
+                  <% } %>
+                </ul>
+              </div>
+              <% } else { %>
+                <p>No results found.</p>
+              <% } %>
     </div>
 </section>
 
