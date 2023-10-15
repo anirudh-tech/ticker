@@ -12,6 +12,8 @@ const moment = require("moment");
 const nodemailer = require("nodemailer");
 const flash = require("express-flash");
 const mongoose = require("mongoose");
+const crypto = require('crypto')
+const razorpay = require('../utility/razorpay')
 module.exports = {
   initial: (req, res) => {
     try {
@@ -75,7 +77,22 @@ module.exports = {
   },
 
   getEmailVerification: async (req, res) => {
-    res.render("user/emailVerification", { messages: req.flash() });
+    try {
+      const Email = req.session.user.Email
+      setTimeout(() => {
+        OTP.deleteOne({ Email: Email })
+          .then(() => {
+            console.log("Document deleted successfully");
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }, 30000);
+      res.render("user/emailVerification", { messages: req.flash() });    
+    } catch (error) {
+      console.log(error);
+      res.redirect('/signup')
+    }
   },
 
   otpAuth: async (req, res, next) => {
@@ -111,33 +128,18 @@ module.exports = {
       }
     } catch (error) {
       console.error(error);
-      res.redirect("/signup");
+      res.redirect("/emailverification");
     }
   },
 
   resendOtp: async (req, res) => {
     try {
-      console.log(req.session.user.user);
-      const matchedOTPrecord = await OTP.findOne({
-        _id: req.session.user.user,
-      });
-      console.log(req.session.user.Email);
-      if (matchedOTPrecord) {
         const duration = 5;
         const Email = req.session.user.Email;
         otpToBeSent = otpFunctions.generateOTP();
         console.log(otpToBeSent);
-        await OTP.updateOne(
-          { Email: Email },
-          {
-            otp: otpToBeSent,
-            createdAt: Date.now(),
-            expiresAt: Date.now() + duration * 60000,
-          }
-        );
         console.log("ivdeee ethi");
         const result = otpFunctions.resendOTP(req, res, Email, otpToBeSent);
-      }
     } catch (error) {
       console.log(error);
       req.flash("error", "error sending OTP");
@@ -427,10 +429,11 @@ module.exports = {
 
 
   postCheckout: async (req,res)=>{
-    console.log(req.body);
+    console.log("inside body",req.body);
      const PaymentMethod = req.body.paymentMethod
      const Address = req.body.Address
      const userId = req.session.user.user;
+     const amount = req.session.totalPrice;
      const user = await User.findById(userId);
      const Email = user.Email
      const cart = await Cart.findOne({UserId:userId}).populate("Items.ProductId")
@@ -474,8 +477,8 @@ module.exports = {
         }
       }
     }
-
-     //send email with details of orders
+    if(PaymentMethod === "cod"){
+        //send email with details of orders
      const transporter = nodemailer.createTransport({
       port: 465,
       host: "smtp.gmail.com",
@@ -498,8 +501,50 @@ module.exports = {
       }
       console.log("Success");
     });
-    res.redirect('/orderSuccess')
-     console.log(cart.Items);
+      res.json({codSuccess:true})
+    }else{
+      console.log("hereeeeeee");
+      const order = {
+        amount: amount,
+        currency: 'INR',
+        receipt: req.session.orderId,
+      };
+      await razorpay.createRazorpayOrder(order)
+      .then ((createdOrder)=>{
+        console.log('payment response',createdOrder);
+        res.json({createdOrder,order})
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+    }
+  },
+
+  verifyPayment: async (req, res) => {
+    console.log('it is the body',req.body);
+    let hmac = crypto.createHmac("sha256", process.env.KEY_SECRET)
+    console.log(req.body.payment.razorpay_order_id + "|" + req.body.payment.razorpay_payment_id);
+    hmac.update(
+      req.body.payment.razorpay_order_id + "|" + req.body.payment.razorpay_payment_id
+    )
+
+    hmac = hmac.digest('hex');
+    if (hmac === req.body.payment.razorpay_signature) {
+      const orderId = new mongoose.Types.ObjectId(req.body.order.createdOrder.receipt)
+      console.log('reciept',req.body.order.createdOrder.receipt);
+      const updateOrderDocument = await Order.findByIdAndUpdate(
+        orderId,
+        {
+          PaymentStatus: 'Paid',
+          PaymentMethod: 'Online'
+        }
+      )
+      console.log('hmac success');
+      res.json({success: true})
+    } else {
+      console.log('hmac failed');
+      res.json({failure: true})
+    }
   },
 
   getOrderSucces: async (req,res)=>{

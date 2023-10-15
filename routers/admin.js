@@ -50,8 +50,19 @@ router.route('/edit/:_id')
 router.route("/order")
     .get(adminAuth.adminTokenAuth,adminController.getOrders)
 
+router.route('/count-orders-by-day')
+    .get(adminAuth.adminTokenAuth,adminController.getCount)
+router.route('/count-orders-by-month')
+    .get(adminAuth.adminTokenAuth,adminController.getCount)
+router.route('/count-orders-by-year')
+    .get(adminAuth.adminTokenAuth,adminController.getCount)
+
+router.route('/latestOrders')
+.get(adminAuth.adminTokenAuth,adminController.getOrdersAndSellers)
 
 
+router.route("/dashboard")
+    .get(adminAuth.adminTokenAuth,adminController.getDashboard)
 
 router.route("/addproduct")
     .get(adminAuth.adminTokenAuth,adminController.getAddProduct)

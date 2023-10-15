@@ -20,7 +20,7 @@ app.set("views",path.join(__dirname,"views"))
 
 app.set('view engine','ejs')
 app.use(session({
-    secret: 'your-secret-key', 
+    secret: 'awertfhyjgfdsrestdxfhcygvjbrdxghfcgvjbm', 
     resave: false,
     saveUninitialized: true,
   }))

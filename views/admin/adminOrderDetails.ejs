@@ -25,7 +25,10 @@
         background-color: #dc3545;
     }
 </style>
-
+<div class="header" style="margin-top: 80px;">
+    <h1>Order Details</h1>
+  </div>
+  <%- include('../partials/admin-canvas')%>
 <div class="container-fluid gradient-custom-2">
     <div class="row justify-content-center align-items-center h-100">
         <% if(order && order.Items.length > 0){ %>

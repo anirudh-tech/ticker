@@ -1,8 +1,10 @@
 <%- include('../layouts/header')%>
 <%- include('../partials/admin-header')%>
+<div class="header" style="margin-top: 80px;">
+  <h1>Order List</h1>
+</div>
+<%- include('../partials/admin-canvas')%>
     <div class="container">
-        <h2 class="text-center tickerTimes mb-4">Order History</h2>
-  
         <% if(order.length> 0) { %> 
           <table class="table table-dark table-striped">
             <thead>

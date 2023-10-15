@@ -13,7 +13,7 @@ module.exports = {
     try {
       const transporter = nodemailer.createTransport({
         port: 465,
-        host: "smtp.gmail.com",
+        service: 'Gmail',
         auth: {
           user: "tickerpage@gmail.com",
           pass: "vfte pvyn gvat uylk",
@@ -21,15 +21,16 @@ module.exports = {
         secure: true,
       });
 
-      const duration = 5;
+      const duration = 30;
       const newOTP = new OTP({
         Email: Email,
         otp: otpToBeSent,
         createdAt: Date.now(),
-        expiresAt: Date.now() + duration * 60000,
+        expiresAt: Date.now() + duration * 1000,
       });
 
       const createdOTPRecord = await newOTP.save();
+      console.log(createdOTPRecord);
 
       // Mail data
       const message = "Enter This OTP to Continue";
@@ -44,7 +45,7 @@ module.exports = {
         if (error) {
           return console.log(error);
         }
-        console.log("Success");
+        console.log("Successfully sent otp");
       });
       res.redirect("/emailVerification");
     } catch (error) {
@@ -58,7 +59,7 @@ module.exports = {
     try {
       const transporter = nodemailer.createTransport({
         port: 465,
-        host: "smtp.gmail.com",
+        service: 'Gmail',
         auth: {
           user: "tickerpage@gmail.com",
           pass: "vfte pvyn gvat uylk",
@@ -66,7 +67,16 @@ module.exports = {
         secure: true,
       });
 
-      const duration = 1;
+      const duration = 30;
+      const newOTP = new OTP({
+        Email: Email,
+        otp: otpToBeSent,
+        createdAt: Date.now(),
+        expiresAt: Date.now() + duration * 1000,
+      });
+
+      const createdOTPRecord = await newOTP.save();
+      console.log(createdOTPRecord);
 
       const message = "Enter This OTP to Continue";
       const mailData = {
@@ -95,7 +105,7 @@ module.exports = {
     try {
       const transporter = nodemailer.createTransport({
         port: 465,
-        host: "smtp.gmail.com",
+        service: 'Gmail',
         auth: {
           user: "tickerpage@gmail.com",
           pass: "vfte pvyn gvat uylk",
@@ -140,7 +150,7 @@ module.exports = {
     try {
       const transporter = nodemailer.createTransport({
         port: 465,
-        host: "smtp.gmail.com",
+        service: 'Gmail',
         auth: {
           user: "tickerpage@gmail.com",
           pass: "vfte pvyn gvat uylk",

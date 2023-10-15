@@ -22,7 +22,7 @@ router.route('/brand/:_id')
     .get(userAuth.userTokenAuth,userController.getShop)
 
 router.route('/signup')
-    .get(userAuth.userTokenAuth,userController.getUserSignup)
+    .get(userAuth.userExist,userController.getUserSignup)
     .post(userController.postUserSignup)
 
 
@@ -69,6 +69,11 @@ router.route('/cart')
 router.route('/checkout')
     .get(userAuth.userTokenAuth,userController.getCheckout)
     .post(userAuth.userTokenAuth,userController.postCheckout)
+
+router.route('/verify-payment')
+    .post(userAuth.userTokenAuth, userController.verifyPayment);
+
+
 
 
 router.route('/orderSuccess')
