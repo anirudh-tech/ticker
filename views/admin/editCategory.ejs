@@ -10,7 +10,12 @@
             <div class="row d-flex justify-content-between">
                 <div class="col-md-8 text-center">
                     <h1 class="mt-5">EDIT CATEGORY</h1>
-                    <form action="/admin/edit/<%=category._id%>" method="post" enctype="multipart/form-data" class="bg-white">
+                    <% if (messages.error) { %>
+                        <div class="alert alert-danger">
+                            <%= messages.error %>
+                        </div>
+                    <% } %>
+                    <form action="/admin/editCategory/<%=category._id%>" method="post" enctype="multipart/form-data" class="bg-white">
                         <div class="form-group">
                             <label for="categoryname">Category Name:</label>
                             <input
@@ -37,8 +42,6 @@
                                 accept="image/*"
                                 style="display: none;"
                                 multiple
-                                
-                                required
                             />
                             </div>
                             <!-- uploaded images -->

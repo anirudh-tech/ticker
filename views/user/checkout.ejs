@@ -303,9 +303,8 @@
       method: 'post',
       data: $('#form-checkout').serialize(),
       success: (response) => {
-        if (response.codSuccess) {
+        if (response.success) {
           console.log('response got')
-          location.href = '/orderSuccess'
         } else {
           console.log('going to initial')
           console.log(response.createdOrder)

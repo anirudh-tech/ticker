@@ -10,6 +10,11 @@
             <div class="row d-flex justify-content-between">
                 <div class="col-md-8">
                     <h1 class="mt-5">ADD CATEGORY</h1>
+                    <% if (messages.error) { %>
+                        <div class="alert alert-danger">
+                            <%= messages.error %>
+                        </div>
+                    <% } %>
                     <form action="/admin/addcategory" method="post" enctype="multipart/form-data" class="bg-white">
                         <div class="form-group">
                             <label for="categoryname">Category Name:</label>

@@ -10,6 +10,11 @@
             <div class="row d-flex justify-content-between">
                 <div class="col-md-8">
                     <h1 class="mt-5">ADD BRAND</h1>
+                    <% if (messages.error) { %>
+                        <div class="alert alert-danger">
+                            <%= messages.error %>
+                        </div>
+                    <% } %>
                     <form action="/admin/addbrand" method="post" class="bg-white">
                         <div class="form-group">
                             <label for="brandname">Brand Name:</label>

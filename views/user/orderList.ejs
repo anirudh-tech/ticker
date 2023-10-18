@@ -18,6 +18,7 @@
           <th>Order ID</th>
           <th>Payment Method</th>
           <th>Order Status</th>
+          <th>Payment Status</th>
           <th>Date</th>
           <th>Action</th>
         </tr>
@@ -28,6 +29,7 @@
             <td><%= order._id %></td>
             <td><%= order.PaymentMethod %></td>
             <td><%= order.Status %></td>
+            <td><%= order.PaymentStatus %></td>
             <td><%= order.OrderDate %></td>
             <td>
                 <% if (order.Status === 'Delivered') { %>
@@ -36,7 +38,7 @@
                   <% } else if (order.Status === 'Order Placed' || order.Status === 'Shipped') { %>
                     <a href="/order/details/<%= order._id %>" class="btn btn-primary">View Details</a>
                     <% if (order.Status !== 'Cancelled') { %>
-                      <a href="/order/cancel/<%= order._id %>" class="btn btn-warning" onclick="confirmCancellation('<%= order._id %>')">Cancel Order</a>
+                      <a href="/order/cancel/<%= order._id %>" class="btn btn-warning" onclick="return confirm('are you sure you want to canel order')">Cancel Order</a>
                     <% } %>
                   <% } %>
             </td>
@@ -47,6 +49,27 @@
   <% } else { %>
     <p>You have no orders yet.</p>
   <% } %>
+
+  <% if (order.length > 0) { %>
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <p>Showing <%= (currentPage - 1) * perPage + 1 %>-
+          <% if(currentPage === totalPages){%>
+            <%=totalCount%>
+            <%}else{%>
+          <%= currentPage * perPage  %>
+          <%}%>
+           results from <%= totalCount %></p>
+        <ul class="pagination">
+          <% for (let i = 1; i <= totalPages; i++) { %>
+            <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+              <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+            </li>
+          <% } %>
+        </ul>
+      </div>
+      <% } else { %>
+        <p>No results found.</p>
+      <% } %>
 </div>
 
 <%- include('../layouts/footer') %>

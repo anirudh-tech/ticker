@@ -6,7 +6,6 @@ const Userschema = new Schema({
   Email: { type: String, required: true },
   Password: { type: String, required: true },
   Status: { type: String ,default:"Active"},
-  
   Address: [{
      Name: {type: String},
      AddressLane: { type: String },
@@ -14,8 +13,6 @@ const Userschema = new Schema({
      Pincode: { type: Number },
      State: { type: String },
      Mobile: { type: Number },
-  }],
-  Cart: [{
   }],
 });
 const User =  mongoose.model('User', Userschema);

@@ -1,22 +1,20 @@
 <%- include('../layouts/header')%>
 <header>
-    <nav class="navbar bg-body-tertiary p-0">
-      <div class="container-fluid d-flex justify-content-center align-items-middle " style="background-color: #f8eded;"> <!-- Align the image to the left -->
+    <nav class="navbar  p-0">
+      <div class="container-fluid d-flex justify-content-center align-items-middle " style="background: linear-gradient(to right, rgb(255, 184, 184), rgb(229, 255, 251));"> <!-- Align the image to the left -->
               <a class="navbar-brand ">
                   <img src="/images/screenshot--272-removebgpreview-1@2x.png" style="max-height: 70px;" alt="">
               </a>
       </div>
     </nav>
     </header>
-<section class="vh-100">
-    <div class="container-fluid mt-5">
+<section class="vh-100 pt-5" style="background: linear-gradient(to right, rgb(255, 184, 184), rgb(229, 255, 251));">
+    <div class="container-fluid ">
         <div class="icon text-center">
             <h1>LOG IN</h1>
         </div>
         <div class="row justify-content-center align-items-center ">
-            <div class="col-md-3 loginBorder position-relative  pe-3">
-                <div class="orText d-none d-md-block">or</div>
-                <h5 class="mb-3">Login</h5>
+            <div class="col-md-3  position-relative  pe-3">
                 <form id="loginForm" action="/login" method="post">
                     <% if (messages.error) { %>
                         <div class="alert alert-danger">
@@ -37,26 +35,6 @@
                     <button type="submit" id="userLogged" class="btn btn-primary" style="width: -webkit-fill-available;">Login</button>
                 </form>
             </div>
-            
-            <!-- Right Div: Continue with Google -->
-            <div class="col-md-3   ps-5 position-relative">
-                <div class="d-flex align-items-center justify-content-start"> 
-                    <img
-                        src="/images/google@2x.png"
-                        alt=""
-                        class="ms-2 position-absolute"
-                        style="height: 70%;"
-                    />
-                    <button
-                        type="button"
-                        class="btn btn-white ml-3 text-center border"
-                        style="width: -webkit-fill-available;"
-                    >
-                        Sign in using Google
-                    </button>
-                </div>
-            </div>
-            
         </div>
         <div class="text-center mt-3">
             <a href="/signup" class="text-decoration-none">Create Account</a>

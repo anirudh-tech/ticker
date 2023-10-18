@@ -19,7 +19,7 @@
                   <li><a class="dropdown-item"  id="byYearOption">By Year</a></li>
                 </ul>
             </div>
-          <canvas id="salesGraph"</canvas>
+          <canvas id="salesGraph"></canvas>
         </div>
       </div>
     </div>
@@ -110,6 +110,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+    updateSalesGraph("day");
 document.getElementById("byDayOption").addEventListener("click", function() {
     document.getElementById("timeIntervalDropdown").textContent = "By Day";
     updateSalesGraph("day");
@@ -174,40 +175,47 @@ async function fetchSalesData(timeInterval) {
   }
 
   async function updateSalesGraph(timeInterval) {
-    const data = await fetchSalesData(timeInterval);
-    console.log("hereee",data.labels);
-    console.log("hereee",data.data);
+    const salesData = await fetchSalesData(timeInterval);
+    console.log(salesData, "hereee");
 
+    // Get the canvas element
     const ctx = document.getElementById("salesGraph").getContext("2d");
-    const chart = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: data.labels,
-        datasets: [
-          {
-            label: "Sales",
-            data: data.data,
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
-            borderColor: "rgba(75, 192, 192, 1)",
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        scales: {
-          x: [{
-            grid: {
-              display: false
+
+    // If a chart already exists, destroy it
+    if (window.myChart) {
+        window.myChart.destroy();
+    }
+
+    window.myChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: salesData.labels,
+            datasets: [
+                {
+                    label: "Sales",
+                    data: salesData.data,
+                    backgroundColor: "rgba(75, 192, 192, 0.2)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 1,
+                },
+            ],
+        },
+        options: {
+            scales: {
+                x: [{
+                    grid: {
+                        display: false
+                    }
+                }],
+                y: [{
+                    beginAtZero: true,
+                    maxTicksLimit: 5
+                }]
             }
-          }],
-          y: [{
-            beginAtZero: true,
-            maxTicksLimit: 5
-          }]
-        }
-      },
+        },
     });
-  }
+}
+
 
   async function updateLatestOrdersAndBestSellers() {
     const data = await fetchOrdersAndSales();

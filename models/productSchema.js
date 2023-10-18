@@ -17,6 +17,7 @@ const ProductsSchema = new mongoose.Schema({
   BrandName: {
     type: Schema.Types.ObjectId,
     required: true,
+    ref: 'brand'
   },
   Tags: {
       type: Array,
@@ -32,6 +33,7 @@ const ProductsSchema = new mongoose.Schema({
   Category: {
     type: Schema.Types.ObjectId,
     required: true,
+    ref: 'Categories'
   },
   DiscountAmount: {
     type: Number,
@@ -41,6 +43,9 @@ const ProductsSchema = new mongoose.Schema({
     required: true,
   },
   Variation: {
+    type: String,
+  },
+  ProductType: {
     type: String,
   },
   UpdatedOn: {
