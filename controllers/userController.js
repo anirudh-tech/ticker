@@ -536,9 +536,7 @@ module.exports = {
       Address: Address,
       PaymentMethod: PaymentMethod,
     });
-    //delete the items in the cart after checkout
     await Cart.findByIdAndDelete(cart._id);
-    //save order to database
     const order = await newOrders.save();
     console.log(order, "in orders");
     req.session.orderId = order._id;
@@ -552,20 +550,17 @@ module.exports = {
       if (product) {
         const updatedQuantity = product.AvailableQuantity - quantity;
 
-        if (updatedQuantity < 0) {
+        if (updatedQuantity <= 0) {
           product.AvailableQuantity = 0;
           product.Status = "Out of Stock";
+          await product.save();
         } else {
-          // Update the product's available quantity
           product.AvailableQuantity = updatedQuantity;
-
-          // Save the updated product back to the database
           await product.save();
         }
       }
     }
     if (PaymentMethod === "cod") {
-      //send email with details of orders
       const transporter = nodemailer.createTransport({
         port: 465,
         host: "smtp.gmail.com",
@@ -781,10 +776,11 @@ module.exports = {
     try {
       const dbPassword = user.Password;
       console.log(req.body);
-      let passwordIsValid = bcrypt.compare(req.body.newPassword, dbPassword);
+      let passwordIsValid = await bcrypt.compare(req.body.currentPassword, dbPassword);
+      console.log("password",passwordIsValid);
       if (passwordIsValid) {
         if (req.body.newPassword === req.body.confirmPassword) {
-          const matchedPassword = bcrypt.compare(
+          const matchedPassword = await bcrypt.compare(
             req.body.newPassword,
             dbPassword
           );
@@ -793,7 +789,7 @@ module.exports = {
               error: "New Password cannot be same as the current one",
             });
           } else {
-            let passwordHashed = bcrypt.hashSync(req.body.newPassword, 8);
+            let passwordHashed = await bcrypt.hashSync(req.body.newPassword, 8);
             const result = await User.updateOne(
               { _id: userId },
               { $set: { Password: passwordHashed } },

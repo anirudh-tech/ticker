@@ -6,8 +6,8 @@ function cropImage(files) {
   files.forEach((ob) => {
     sharp(`./public/uploads/${ob}`)
     .resize({
-      width: 270,
-      height: 370,
+      width: 300,
+      height: 300,
       fit: "inside",
       withoutEnlargement: true,
     })

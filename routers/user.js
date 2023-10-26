@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const userController = require('../controllers/userController')
+const couponController = require('../controllers/couponController')
 const userAuth = require('../middlewares/userAuth')
 
 
@@ -112,8 +113,12 @@ router.route('/order/cancel/:_id')
 
 router.route("/trackOrder")
     .get(userAuth.userTokenAuth,userController.getTrackOrder)
-
-
+    
+    
+    //coupon
+router.route("/checkCoupon")
+    .post(userAuth.userTokenAuth,couponController.checkCoupon)
+    
 
 
 

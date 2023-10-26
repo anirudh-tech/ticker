@@ -6,6 +6,7 @@ const categoryController = require('../controllers/categoryController')
 const orderController = require('../controllers/orderController')
 const adminController = require('../controllers/adminController')
 const userController = require('../controllers/userController')
+const couponController = require('../controllers/couponController')
 const upload = require('../middlewares/upload')
 const adminAuth = require('../middlewares/adminAuth')
 const { route } = require('./user')
@@ -32,6 +33,7 @@ router.route("/dashboard")
     .get(adminAuth.adminTokenAuth,adminController.getDashboard)
 router.route('/categoriesandbrands')
     .get(adminAuth.adminTokenAuth,adminController.getCategoriesAndBrands)
+
 
 
 
@@ -84,6 +86,12 @@ router.route("/editBrand/:_id")
     .post(adminAuth.adminTokenAuth,brandController.postEditBrand)
 
 
+router.route('/coupons')
+    .get(adminAuth.adminTokenAuth,couponController.getCoupon)
+
+router.route('/addCoupon')
+    .get(adminAuth.adminTokenAuth,couponController.getAddCoupon)
+    .post(adminAuth.adminTokenAuth,couponController.postAddCoupon)
 
 router.route("/logout")
     .get(adminController.getAdminLogout)

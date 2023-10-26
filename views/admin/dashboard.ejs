@@ -131,7 +131,6 @@ document.getElementById("byYearOption").addEventListener("click", function() {
 async function fetchSalesData(timeInterval) {
     try {
         let response;
-
         if (timeInterval === "day") {
             console.log("daysss");
             response = await fetch("/admin/count-orders-by-day");
@@ -185,18 +184,19 @@ async function fetchSalesData(timeInterval) {
     if (window.myChart) {
         window.myChart.destroy();
     }
+    const barColors = ["red", "green","blue","orange","brown"]
 
     window.myChart = new Chart(ctx, {
-        type: "line",
+        type: "bar",
         data: {
             labels: salesData.labels,
             datasets: [
                 {
                     label: "Sales",
                     data: salesData.data,
-                    backgroundColor: "rgba(75, 192, 192, 0.2)",
+                    backgroundColor: "blue",
                     borderColor: "rgba(75, 192, 192, 1)",
-                    borderWidth: 1,
+                    borderWidth: 3,
                 },
             ],
         },
@@ -204,7 +204,7 @@ async function fetchSalesData(timeInterval) {
             scales: {
                 x: [{
                     grid: {
-                        display: false
+                        display: true
                     }
                 }],
                 y: [{

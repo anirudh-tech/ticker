@@ -30,20 +30,9 @@
     </div>
 </div>
 <div class="container tickerTimes">
-  <h6>Your Profile</h6>
+  <h1 class="text-center tickerTimes">Your Profile</h1>
   <div class="row mb-4 mt-3">
-    <div class="col-lg-2">
-      <div class="profile-picture d-flex flex-column">
-        <div class="profile-image">
-        </div>
-        <input type="file" id="profile-picture" accept="image/*" style="display: none;">
-        <div class="text-start">
-          <label for="profile-picture" class="profile-upload-btn">
-            <i class="fas fa-camera"></i> Upload Picture
-          </label>
-        </div>
-      </div>
-    </div>
+    
     <div class="col-lg-10">
       <div class="form-group">
         <label for="name">Name:</label>
@@ -199,18 +188,14 @@
         console.log('Password changed successfully');
         // Close the modal
         $('#changePasswordModal').modal('hide');
-        // Show a success message
-        // You can replace this with your preferred success message display logic
+
         alert('Password changed successfully');
       } else {
-        // Show a flash message
         $('#flashMessage').text(response.error).show();
       }
     },
     error: (xhr, status, error) => {
-      // Handle the AJAX error
       console.log('Error:', error);
-      // Show a flash message
       $('#flashMessage').text('An error occurred. Please try again.').show();
     }
   });

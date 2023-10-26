@@ -171,6 +171,7 @@ getProduct: async (req, res) => {
     req.body.Category = category._id;
     req.body.BrandName = BrandName._id;
     req.body.images = images;
+    cropImage(images)
     
     console.log("inside iffff");
       if (req.body.AvailableQuantity <= 0) {

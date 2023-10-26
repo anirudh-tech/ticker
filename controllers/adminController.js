@@ -119,7 +119,6 @@ module.exports = {
   },
 
   getCount: async (req, res) => {
-
     try {
       const orders = await Order.find({
         Status: {
@@ -143,9 +142,9 @@ module.exports = {
           console.log("count");
           // Count orders by day
           if (!orderCountsByDay[dayMonthYear]) {
-            orderCountsByDay[dayMonthYear] = 1;
+            orderCountsByDay[dayMonthYear] = order.TotalPrice;
           } else {
-            orderCountsByDay[dayMonthYear]++;
+            orderCountsByDay[dayMonthYear]+= order.TotalPrice;
           }
           const ordersByDay = Object.keys(orderCountsByDay).map(
             (dayMonthYear) => ({

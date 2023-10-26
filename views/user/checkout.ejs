@@ -101,14 +101,13 @@
 <form id="form-checkout">
 <div class="container custom-container main">
   <div class="row">
-    <!-- Left Column - Col-7 -->
       <div class="col-md-7">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Saved Addresses</h5>
 
             <%user.Address.forEach(function(Address) { %>
-            <!-- Address Card 1 -->
+
             <div class="address-card row">
               <div class="col-1">
                 <input
@@ -148,7 +147,6 @@
         </div>
       </div>
       
-      <!-- Right Column - Col-5 -->
       <div class="col-md-5">
         <div class="card">
           <div class="card-body">
@@ -303,7 +301,8 @@
       method: 'post',
       data: $('#form-checkout').serialize(),
       success: (response) => {
-        if (response.success) {
+        if (response.codSuccess) {
+          window.location = '/orderSuccess'
           console.log('response got')
         } else {
           console.log('going to initial')
@@ -317,8 +316,8 @@
   function handlePayNowClick (order) {
     console.log(order)
     var options = {
-    "key": "rzp_test_2kq1q9uS7VLUsv", // Enter the Key ID generated from the Dashboard
-    "amount": order.createdOrder.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "key": "rzp_test_2kq1q9uS7VLUsv",
+    "amount": order.createdOrder.amount, 
     "currency": "INR",
     "name": "TICKER",
     "description": "Test Transaction",

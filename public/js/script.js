@@ -99,11 +99,32 @@ $(document).ready(function () {
       $("#perfumeQuantityDropdown").show();
       $("#watchColorInput").hide();
     } else {
-      // Handle other cases if needed
       $("#watchColorInput").hide();
       $("#perfumeQuantityDropdown").hide();
     }
   });
+
+  $('input[name = "discountType"').change(function () {
+    if($(this).val() === "percentage") {
+      console.log("inside percentage radio");
+      $('#percentageFields').show();
+      $('#fixedFields').hide();
+    }else if($(this).val() === "fixed") {
+      $('#fixedFields').show();
+      $('#percentageFields').hide();
+    }
+  })
+
+  $('input[name = "applyType"').change(function (){
+    if($(this).val() === "categories"){
+      console.log("inside categories radio");
+      $('#categoriesList').show()
+    }else if($(this).val() === "all"){
+      $('#categoriesList').hide()
+    }
+  })
+
+
 
   const fileInput = $("#productImage");
   const uploadedImages = [

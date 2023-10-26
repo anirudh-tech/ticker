@@ -95,7 +95,7 @@
                     ></a>
                     <a
                       href="/removefromcart/<%=cartItem.ProductId._id%>"
-                      class="btn btn-light border text-danger icon-hover-danger"
+                      class="btn btn-light border text-danger icon-hover-danger remove-button"
                     >
                       Remove</a
                     >
@@ -123,14 +123,16 @@
             <div class="card-body">
                 <div class="form-group">
                   <label class="form-label">Have coupon?</label>
+                  <div id="flashMessage" class="alert alert-danger" style="display: none;"></div>
                   <div class="input-group">
                     <input
                       type="text"
                       class="form-control border"
-                      name=""
+                      id="coupon"
+                      name="couponCode"
                       placeholder="Coupon code"
                     />
-                    <button class="btn btn-light border">Apply</button>
+                    <button type="button" data-product-id="couponClaim" class="btn btn-light border applyCoupon">Apply</button>
                   </div>
                 </div>
             </div>
@@ -138,12 +140,12 @@
           <div class="card shadow-0 border">
             <div class="card-body">
               <div class="d-flex justify-content-between">
-                <p class="mb-2">Total price:</p>
+                <p class="mb-2">Sub Total :</p>
                 <div id="sub-total"></div>
               </div>
               <div class="d-flex justify-content-between">
                 <p class="mb-2">Discount:</p>
-                <p class="mb-2 text-success">--</p>
+                <div id="discountCell"></div>
               </div>
               <div class="d-flex justify-content-between">
                 <p class="mb-2">TAX:</p>
@@ -199,21 +201,40 @@
     text-align: right; /* Align the text to the right */
   }
 </style>
+
 <!-- Footer -->
 <%- include('../partials/user-footer')%>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  ///document.addEventListener("DOMContentLoaded", () => {
-  // ... existing code ...
-
   document.addEventListener("DOMContentLoaded", () => {
+    const removeButtons = document.querySelectorAll(".remove-button");
     const decreaseButtons = document.querySelectorAll(".decrease-quantity");
     const increaseButtons = document.querySelectorAll(".increase-quantity");
+    const applyCoupon = document.querySelectorAll(".applyCoupon")
 
-    // Function to update total amount
+
+
+    removeButtons.forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault(); 
+
+        Swal.fire({
+          title: "Remove Product",
+          text: "Are you sure you want to remove this product from your cart?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, remove it",
+          cancelButtonText: "Cancel",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = button.href;
+          }
+        });
+      });
+    });
     function updateTotalAmount() {
       let totalAmount = 0;
 
-      // Get all product rows
       const productRows = document.querySelectorAll(".row.gy-3.mb-4");
       productRows.forEach((row) => {
         const productId = row
@@ -232,11 +253,10 @@
       });
 
 
-      // Update the total amount in the HTML
       const totalAmountCell = document.getElementById("totalAmountCell");
       const subTotal = document.getElementById("sub-total");
       totalAmountCell.value = `${totalAmount.toFixed(2)}`;
-      subTotal.textContent = `Rs ${totalAmount.toFixed(2)}`;
+      subTotal.textContent = `${totalAmount.toFixed(2)}`;
       const hiddenTotalAmount = document.getElementById('hiddenTotalAmount');
       hiddenTotalAmount.value = totalAmount.toFixed(2);
     }
@@ -277,6 +297,46 @@
       }
     }
 
+    async function checkCoupon(couponInput,subTotal){
+      try {
+        const response = await fetch('/checkCoupon',{
+          method: 'POST',
+          headers:{
+            'Content-Type': 'application/json'
+          },
+          body:JSON.stringify({code: couponInput, total: subTotal})
+        })
+        if(response.ok){
+          const data=await response.json()
+          if(data.success){
+            console.log("inside okkk");
+            console.log(data);
+            const discount = parseFloat(data.discount);
+            const discountCell = document.getElementById('discountCell')
+            discountCell.textContent = discount.toFixed(2)
+            const newTotal = parseFloat(subTotal) - discount;
+            const totalAmountCell = document.getElementById('totalAmountCell');
+            totalAmountCell.value = newTotal.toFixed(2);
+            Swal.fire('','Coupon Applied','success')
+          }else{
+          console.log("inside elseee");
+          Swal.fire(data.error)
+          console.log(error);
+          $('#flashMessage').text(data.error).show();
+        }
+        }
+      } catch (error) {
+        console.error('Error checking coupon:', error);
+      }
+    }
+
+    applyCoupon.forEach(element =>{
+      element.addEventListener("click",function(e){
+        const couponInput = document.querySelector('#coupon').value
+        const subTotal = document.getElementById("sub-total").textContent
+        checkCoupon(couponInput,subTotal);
+      })
+    })
     // Add event listeners to decrease buttons
     decreaseButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -286,7 +346,6 @@
         const availableQuantity = parseInt(quantityInput.getAttribute("data-available-quantity"), 10);
         
         if (quantity === 1) {
-          // Prevent further decrease when quantity is 1
           return;
         }
         if (quantity <= availableQuantity) {
