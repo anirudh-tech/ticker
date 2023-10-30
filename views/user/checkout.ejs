@@ -35,7 +35,7 @@
             <input
               type="text"
               class="form-control"
-              name="Address"
+              name="AddressLane"
               id="address"
               placeholder="Enter your address"
               required
@@ -105,7 +105,7 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Saved Addresses</h5>
-
+            
             <%user.Address.forEach(function(Address) { %>
 
             <div class="address-card row">
@@ -292,10 +292,21 @@
   }
 </style>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 <script>
   $("#form-checkout").submit((e) => {
     e.preventDefault()
+    const selectedAddress = $("input[name='Address']:checked").val();
+    if (!selectedAddress) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please add an address before confirming the order.",
+          
+        });
+        return
+      }
     $.ajax({
       url:'/checkout',
       method: 'post',

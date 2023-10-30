@@ -176,54 +176,6 @@
           </div>
           <br />
           <div class="form-group">
-            <label>Apply to:</label>
-            <div class="form-check form-check-inline">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="applyType"
-                value="all"
-                id="allRadio"
-              />
-              <label class="form-check-label" for="allRadio">All</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="applyType"
-                value="categories"
-                id="categoriesRadio"
-              />
-              <label class="form-check-label" for="categoriesRadio"
-                >Categories</label
-              >
-            </div>
-          </div>
-          <div class="form-group" id="categoriesList" style="display: none">
-            <label>Select Categories:</label>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                name="category"
-                value="Category1"
-                id="category1"
-              />
-              <label class="form-check-label" for="category1">Category 1</label>
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                name="category"
-                value="Category2"
-                id="category2"
-              />
-              <label class="form-check-label" for="category2">Category 2</label>
-            </div>
-          </div>
-          <div class="form-group">
             <button type="submit" class="btn btn-primary">Create Coupon</button>
           </div>
         </form>
@@ -264,14 +216,12 @@
                 <p class="card-text">AMOUNT : <%=coupon.amount%></p>
                 <p class="card-text">COUPON TYPE : <%=coupon.couponType%></p>
                 <p class="card-text">START DATE : <%=coupon.startDate%></p>
-                <p class="card-text">EXPIRES ON : <%=coupon.endDate%></p>
-                <p class="card-text">APPLY TYPE : <%=coupon.applyType%></p>
-                <% if (coupon.applyType === 'all'){%>
-                  <button class="btn btn-success">Edit Coupon</button>
-                  <%} else { %>
-                    <p class="card-text">CATEGORY : <%=coupon.category%></p>
-                    <button class="btn btn-success">Edit Coupon</button>
+                <% if ( date < coupon.endDate){%>
+                  <p class="card-text">EXPIRES ON : <%=coupon.endDate%></p>
+                <%}else{%>
+                  <p class="card-text text-danger">EXPIRED ON : <%=coupon.endDate%></p>
                 <%}%>
+                  <button class="btn btn-success">Edit Coupon</button>
               </div>
             </div>
           </div>
@@ -333,8 +283,9 @@
         success: (response) => {
           if (response.success) {
             console.log("coupon added successfully");
+            window.location.reload();
             $("#addCouponModal").modal("hide");
-            alert("Password changed successfully");
+            alert("coupon Added successfully");
           } else {
             console.log(response.error);
             $("#flashMessage").text(response.error).show();

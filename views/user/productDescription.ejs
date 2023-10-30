@@ -4,10 +4,10 @@
         <div class="row tickerTimes">
             <% if (product){%>
             <div class="col-sm-12 col-md-6 col-xl-4">
-                <div class="product-cover col-sm-12" id="img-container">
+                <div class="product-cover mt-4 col-sm-12" id="img-container">
                     <img src="/uploads/<%= product.images[0] %>" alt="Cover Image" class="img-fluid" id="selectedImage">
                 </div>
-                <div class="product-images col-4 col-sm-4 mt-4 d-flex gap-3">
+                <div class="product-images col-4 col-sm-3 mt-4 d-flex gap-3">
                     <% if (product.images && product.images.length > 0) { %>
                         <% for (let i = 0; i < product.images.length; i++) { %>
                             <img src="/uploads/<%= product.images[i] %>" alt="Product Image <%= i + 1 %>" class="img-thumbnail rounded float-start" onclick="selectImage(this)">
@@ -157,11 +157,25 @@
 
 <%- include('../partials/user-footer')%>
 <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    $(".img-thumbnail").click(function () {
+        console.log("ivdeee ind");
+    var selectedImageSrc = $(this).attr("src");
+    $("#selectedImage").attr("src", selectedImageSrc);
+    var options = {
+    width: 400,
+    zoomWidth: 600,
+    offset: { vertical: 0, horizontal: 10 }
+  };
+
+  new ImageZoom(document.getElementById('img-container'),options)
+
+  });
+
      var options = {
     width: 400,
-    zoomWidth: 400,
+    zoomWidth: 600,
     offset: { vertical: 0, horizontal: 10 }
   };
 

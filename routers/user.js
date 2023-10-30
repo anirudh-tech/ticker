@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const userController = require('../controllers/userController')
 const couponController = require('../controllers/couponController')
+const cartController = require('../controllers/cartController')
 const userAuth = require('../middlewares/userAuth')
 
 
@@ -99,6 +100,8 @@ router.route('/cart')
 router.route('/removefromcart/:_id')
     .get(userAuth.userTokenAuth, userController.removeFromCart)
 
+router.route('/checkStock')
+    .get(userAuth.userTokenAuth, cartController.checkStock)
 
 
 // order
@@ -110,6 +113,11 @@ router.route('/order/details/:_id')
 
 router.route('/order/cancel/:_id')
     .get(userAuth.userTokenAuth,userController.cancelOrder)
+router.route('/download-invoice')
+    .post(userAuth.userTokenAuth,userController.downloadInvoice)
+
+router.route('/download-invoice/:_id')
+    .get(userAuth.userTokenAuth,userController.downloadfile)
 
 router.route("/trackOrder")
     .get(userAuth.userTokenAuth,userController.getTrackOrder)

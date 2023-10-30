@@ -58,14 +58,7 @@ $(document).ready(function () {
     }
   });
 
-  $(".img-thumbnail").click(function () {
-    // Get the selected image's source
-    var selectedImageSrc = $(this).attr("src");
-
-    // Set the source of the product cover to the selected image
-    $("#selectedImage").attr("src", selectedImageSrc);
-  });
-
+  
 
   const minusBtn = $("#minusBtn");
   const plusBtn = $("#plusBtn");

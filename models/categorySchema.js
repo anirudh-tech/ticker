@@ -10,7 +10,7 @@ const CategoriesSchema =new mongoose.Schema({
     image:{
         type: String,
         required: true
-    }
+    },
 })
 
 const Categories = mongoose.model('Categories', CategoriesSchema);

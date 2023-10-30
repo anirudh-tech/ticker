@@ -46,7 +46,6 @@ module.exports = {
           req.session.admin = admin;
           res.redirect("/admin/dashboard");
         } else {
-          console.log(error);
           res.redirect("/admin/login");
         }
       } else {
@@ -126,10 +125,15 @@ module.exports = {
         }
       });
       const orderCountsByDay = {};
+      const totalAmountByDay = {};
       const orderCountsByMonthYear = {};
+      const totalAmountByMonthYear = {};
       const orderCountsByYear = {};
-      let labels;
-      let data;
+      const totalAmountByYear = {};
+      let labelsByCount;
+      let labelsByAmount;
+      let dataByCount;
+      let dataByAmount;
       console.log('outside')
       orders.forEach((order) => {
         console.log('inside')
@@ -140,11 +144,12 @@ module.exports = {
         
         if (req.url === "/count-orders-by-day") {
           console.log("count");
-          // Count orders by day
           if (!orderCountsByDay[dayMonthYear]) {
-            orderCountsByDay[dayMonthYear] = order.TotalPrice;
+            orderCountsByDay[dayMonthYear] = 1;
+            totalAmountByDay[dayMonthYear] = order.TotalPrice
           } else {
-            orderCountsByDay[dayMonthYear]+= order.TotalPrice;
+            orderCountsByDay[dayMonthYear]++;
+            totalAmountByDay[dayMonthYear] += order.TotalPrice
           }
           const ordersByDay = Object.keys(orderCountsByDay).map(
             (dayMonthYear) => ({
@@ -152,51 +157,89 @@ module.exports = {
               count: orderCountsByDay[dayMonthYear],
             })
           );
+          const amountsByDay = Object.keys(totalAmountByDay).map(
+            (dayMonthYear) => ({
+              _id: dayMonthYear,
+              total: totalAmountByDay[dayMonthYear],
+            })
+          );
+          amountsByDay.sort((a,b)=> (a._id < b._id ? -1 : 1));
           ordersByDay.sort((a, b) => (a._id < b._id ? -1 : 1));
-          labels = ordersByDay.map((entry) =>
+          labelsByCount = ordersByDay.map((entry) =>
             moment(entry._id, "YYYY-MM-DD").format("DD MMM YYYY")
           );
-          data = ordersByDay.map((entry) => entry.count);
+          labelsByAmount = amountsByDay.map((entry) =>
+            moment(entry._id, "YYYY-MM-DD").format("DD MMM YYYY")
+          );
+          dataByCount = ordersByDay.map((entry) => entry.count);
+          dataByAmount = amountsByDay.map((entry) => entry.total);
+
+
         } else if (req.url === "/count-orders-by-month") {
-          // Count orders by month-year
           if (!orderCountsByMonthYear[monthYear]) {
             orderCountsByMonthYear[monthYear] = 1;
+            totalAmountByMonthYear[monthYear] = order.TotalPrice;
           } else {
             orderCountsByMonthYear[monthYear]++;
+            totalAmountByMonthYear[monthYear] += order.TotalPrice;
           }
-          const ordersByMonthYear = Object.keys(orderCountsByMonthYear).map(
+        
+          const ordersByMonth = Object.keys(orderCountsByMonthYear).map(
             (monthYear) => ({
               _id: monthYear,
               count: orderCountsByMonthYear[monthYear],
             })
           );
-          ordersByMonthYear.sort((a, b) => (a._id < b._id ? -1 : 1));
-          labels = ordersByMonthYear.map((entry) =>
+          const amountsByMonth = Object.keys(totalAmountByMonthYear).map(
+            (monthYear) => ({
+              _id: monthYear,
+              total: totalAmountByMonthYear[monthYear],
+            })
+          );
+          console.log("by monthhh",amountsByMonth);
+        
+          ordersByMonth.sort((a, b) => (a._id < b._id ? -1 : 1));
+          amountsByMonth.sort((a, b) => (a._id < b._id ? -1 : 1));
+        
+          labelsByCount = ordersByMonth.map((entry) =>
             moment(entry._id, "YYYY-MM").format("MMM YYYY")
           );
-          data = ordersByMonthYear.map((entry) => entry.count);
+          labelsByAmount = amountsByMonth.map((entry) =>
+            moment(entry._id, "YYYY-MM").format("MMM YYYY")
+          );
+          dataByCount = ordersByMonth.map((entry) => entry.count);
+          dataByAmount = amountsByMonth.map((entry) => entry.total);
         } else if (req.url === "/count-orders-by-year") {
           // Count orders by year
           if (!orderCountsByYear[year]) {
             orderCountsByYear[year] = 1;
+            totalAmountByYear[year] = order.TotalPrice;
           } else {
             orderCountsByYear[year]++;
+            totalAmountByYear[year] += order.TotalPrice;
           }
+        
           const ordersByYear = Object.keys(orderCountsByYear).map((year) => ({
             _id: year,
             count: orderCountsByYear[year],
           }));
+          const amountsByYear = Object.keys(totalAmountByYear).map((year) => ({
+            _id: year,
+            total: totalAmountByYear[year],
+          }));
+        
           ordersByYear.sort((a, b) => (a._id < b._id ? -1 : 1));
-          labels = ordersByYear.map((entry) =>
-            moment(entry._id, "YYYY").format("YYYY")
-          );
-          data = ordersByYear.map((entry) => entry.count);
+          amountsByYear.sort((a, b) => (a._id < b._id ? -1 : 1));
+        
+          labelsByCount = ordersByYear.map((entry) => entry._id);
+          labelsByAmount = amountsByYear.map((entry) => entry._id);
+          dataByCount = ordersByYear.map((entry) => entry.count);
+          dataByAmount = amountsByYear.map((entry) => entry.total);
         }
       });
-      console.log(data);
-      console.log(labels)
 
-      res.json({ labels, data });
+
+      res.json({ labelsByCount,labelsByAmount, dataByCount, dataByAmount });
     } catch (err) {
       console.error(err);
     }

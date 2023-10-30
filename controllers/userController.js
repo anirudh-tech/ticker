@@ -10,6 +10,7 @@ const Order = require("..//models/orderSchema");
 const Brand = require("../models/brandSchema");
 const moment = require("moment");
 const nodemailer = require("nodemailer");
+const invoice = require('../utility/invoice')
 const flash = require("express-flash");
 const mongoose = require("mongoose");
 const crypto = require("crypto");
@@ -466,8 +467,10 @@ module.exports = {
   },
 
   postCart: async (req, res) => {
-    req.session.totalPrice = req.body.totalPrice;
-    res.redirect("/checkout");
+    console.log(req.body)
+    req.session.totalPrice = parseInt(req.body.totalPrice);
+    console.log("reached here",req.session.totalPrice)
+    res.json({success:true})
   },
   addToCart: async (req, res) => {
     const userId = req.session.user.user;
@@ -511,7 +514,14 @@ module.exports = {
   getCheckout: async (req, res) => {
     const userId = req.session.user.user;
     const user = await User.findById(userId);
-    res.render("user/checkout", { user });
+    const cart = await Cart.findOne({ UserId: userId }).populate(
+      "Items.ProductId"
+    );
+    if(!cart){
+      res.redirect('/cart')
+    }else{
+      res.render("user/checkout", { user });
+    }
   },
 
   postCheckout: async (req, res) => {
@@ -526,19 +536,36 @@ module.exports = {
       "Items.ProductId"
     );
     console.log(req.session.totalPrice);
+    const address = await User.findOne({
+      _id:userId,
+      Address:{
+        $elemMatch:{_id: new mongoose.Types.ObjectId(Address)}
+      }
+    })
+    console.log("address====",address); 
+    console.log("add====",address.Address[0].AddressLane,
+    );
 
+    const add = {
+      Name: address.Address[0].Name,
+      Address:  address.Address[0].AddressLane,
+      Pincode: address.Address[0].Pincode,
+      City: address.Address[0].City,
+      State: address.Address[0].State,
+      Mobile:  address.Address[0].Mobile,
+    }
     const newOrders = new Order({
       UserId: userId,
       Items: cart.Items,
       OrderDate: moment(new Date()).format("llll"),
       ExpectedDeliveryDate: moment().add(4, "days").format("llll"),
       TotalPrice: req.session.totalPrice,
-      Address: Address,
+      Address: add,
       PaymentMethod: PaymentMethod,
     });
     await Cart.findByIdAndDelete(cart._id);
     const order = await newOrders.save();
-    console.log(order, "in orders");
+    console.log( "in orders==",order);
     req.session.orderId = order._id;
 
     for (const item of order.Items) {
@@ -602,6 +629,28 @@ module.exports = {
           console.log(err);
         });
     }
+  },
+
+  downloadInvoice: async (req,res)=>{
+    try {
+      const orderData = await Order.findOne({
+        _id: req.body.orderId
+      }).populate('Address')
+      .populate('Items.ProductId')
+      console.log("order data ====",orderData);
+      const filePath = await invoice.order(orderData)
+      const orderId = orderData._id
+      res.json({orderId})
+    } catch (error) {
+      console.error("Error in downloadInvoice:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+
+  downloadfile: async (req,res)=>{
+    const id = req.params._id
+    const filePath = `C:/Users/user/Desktop/Ticker/public/pdf/${id}.pdf`
+    res.download(filePath,`invoice.pdf`)
   },
 
   verifyPayment: async (req, res) => {

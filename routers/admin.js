@@ -7,6 +7,7 @@ const orderController = require('../controllers/orderController')
 const adminController = require('../controllers/adminController')
 const userController = require('../controllers/userController')
 const couponController = require('../controllers/couponController')
+const offerController = require('../controllers/offerController')
 const upload = require('../middlewares/upload')
 const adminAuth = require('../middlewares/adminAuth')
 const { route } = require('./user')
@@ -90,8 +91,11 @@ router.route('/coupons')
     .get(adminAuth.adminTokenAuth,couponController.getCoupon)
 
 router.route('/addCoupon')
-    .get(adminAuth.adminTokenAuth,couponController.getAddCoupon)
     .post(adminAuth.adminTokenAuth,couponController.postAddCoupon)
+
+
+router.route('/offers')
+    .get(adminAuth.adminTokenAuth,offerController.getOffers)
 
 router.route("/logout")
     .get(adminController.getAdminLogout)

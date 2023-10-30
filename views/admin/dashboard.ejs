@@ -6,23 +6,31 @@
 <div class="container mt-4">
   <div class="row">
     <div class="col-lg-12">
-      <div class="card mb-4" style="background: linear-gradient(to right, rgba(255,0,0,0), rgb(229, 255, 251));">
-        <h2 class="card-header">Sales Analysis</h2>
-        <div class="card-body">
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="timeIntervalDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                  By Day
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="timeIntervalDropdown">
-                    <li><a class="dropdown-item"  id="byDayOption">By Day</a></li>
-                    <li><a class="dropdown-item"  id="byMonthOption">By Month</a></li>
-                  <li><a class="dropdown-item"  id="byYearOption">By Year</a></li>
-                </ul>
+        <div class="card mb-4" style="background: linear-gradient(to right, rgba(255,0,0,0), rgb(229, 255, 251));">
+          <h2 class="card-header">Sales Analysis</h2>
+          <div class="card-body">
+            <div class="row">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="timeIntervalDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                      By Day
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="timeIntervalDropdown">
+                      <li><a class="dropdown-item" id="byDayOption">By Day</a></li>
+                      <li><a class="dropdown-item" id="byMonthOption">By Month</a></li>
+                      <li><a class="dropdown-item" id="byYearOption">By Year</a></li>
+                    </ul>
+                  </div>
+              <div class="col-lg-6">
+                <canvas id="salesGraphAmount"></canvas>
+              </div>
+              <div class="col-lg-6">
+                <canvas id="salesGraphCount"></canvas>
+              </div>
             </div>
-          <canvas id="salesGraph"></canvas>
+          </div>
         </div>
       </div>
-    </div>
+      
 
     <div class="col-lg-12">
         <div class="card mb-4" style="background: linear-gradient(to right, rgba(255,0,0,0), rgb(196, 255, 245));">
@@ -157,8 +165,6 @@ async function fetchSalesData(timeInterval) {
     }
 }
 
-
-
   async function fetchOrdersAndSales() {
     try {
       const response = await fetch("/admin/latestOrders");
@@ -178,22 +184,54 @@ async function fetchSalesData(timeInterval) {
     console.log(salesData, "hereee");
 
     // Get the canvas element
-    const ctx = document.getElementById("salesGraph").getContext("2d");
+    const Amount = document.getElementById("salesGraphAmount").getContext("2d");
+    const Count = document.getElementById("salesGraphCount").getContext("2d");
 
     // If a chart already exists, destroy it
-    if (window.myChart) {
-        window.myChart.destroy();
+    if (window.myChart1) {
+        window.myChart1.destroy();
+    }
+    if (window.myChart2) {
+        window.myChart2.destroy();
     }
     const barColors = ["red", "green","blue","orange","brown"]
 
-    window.myChart = new Chart(ctx, {
+    window.myChart1 = new Chart(Amount, {
         type: "bar",
         data: {
-            labels: salesData.labels,
+            labels: salesData.labelsByCount,
             datasets: [
                 {
                     label: "Sales",
-                    data: salesData.data,
+                    data: salesData.dataByCount,
+                    backgroundColor: "yellow",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 3,
+                },
+            ],
+        },
+        options: {
+            scales: {
+                x: [{
+                    grid: {
+                        display: true
+                    }
+                }],
+                y: [{
+                    beginAtZero: true,
+                    maxTicksLimit: 5
+                }]
+            }
+        },
+    });
+    window.myChart2 = new Chart(Count, {
+        type: "bar",
+        data: {
+            labels: salesData.labelsByAmount,
+            datasets: [
+                {
+                    label: "Sales",
+                    data: salesData.dataByAmount,
                     backgroundColor: "blue",
                     borderColor: "rgba(75, 192, 192, 1)",
                     borderWidth: 3,

@@ -14,16 +14,11 @@ module.exports = {
   getCoupon: async (req, res) => {
     try {
       const coupons = await Coupon.find();
-      res.render("admin/showCoupon", { coupons });
+      const date = new Date()
+      res.render("admin/showCoupon", { coupons, date });
     } catch (error) {
       console.log(error);
     }
-  },
-
-  getAddCoupon: async (req, res) => {
-    try {
-      res.render("admin/addCoupon");
-    } catch (error) {}
   },
 
   postAddCoupon: async (req, res) => {
@@ -37,11 +32,14 @@ module.exports = {
       const coupon = await Coupon.create(req.body);
       if (coupon) {
         console.log("added to collection");
+        res.json({ success: true });
       } else {
         console.log("not added to collection");
+        res.json({ error: "COUPON already consist" });
       }
     } catch (error) {
       console.log(error);
+      res.json({ error: "Some error occured" });
     }
   },
 
@@ -59,90 +57,81 @@ module.exports = {
           let startDate = couponMatch.startDate;
           let endDate = couponMatch.endDate;
           if (startDate <= currentDate && currentDate <= endDate) {
-            if (couponMatch.applyType === "categories") {
-            } else {
-              let couponLimit = await Coupon.findOne({
-                couponCode: couponMatch.couponCode,
-                "usedBy.userId": userId,
-              });
-              console.log("here is coupon limit", couponLimit);
-              if(!couponLimit){
-                result = await Coupon.updateOne(
-                    { couponCode: couponMatch.couponCode },
-                    { $push: { usedBy: { userId, limit: 1 } } }
-                  );
-              }
-              couponLimit = await Coupon.findOne({
-                couponCode: couponMatch.couponCode,
-                "usedBy.userId": userId,
-              });
-              const usedByEntry = couponLimit.usedBy.find(entry => entry.userId.toString() === userId.toString());
-              let limit
-              if (usedByEntry) {
-                limit = usedByEntry.limit;
-              }
-              console.log("after update", limit);
-              console.log("after", couponMatch.limit);
-
-              if (limit === couponMatch.limit) {
-                return res.json({ error: "Coupon limit exceeded" });
-              } else {
-                if (couponMatch.couponType === "public") {
-                  let result;
-                  let usedCoupon = await Coupon.findOne({
+              if (couponMatch.couponType === "public") {
+                // public coupon apply on all products
+                if (couponMatch.limit === 0) {
+                  return res.json({ error: "Coupon already applied" });
+                } else {
+                  let couponUsed = await Coupon.findOne({
                     couponCode: couponMatch.couponCode,
                     "usedBy.userId": userId,
                   });
-                  if (!usedCoupon) {
-                    result = await Coupon.updateOne(
-                      { couponCode: couponMatch.couponCode },
-                      { $push: { usedBy: { userId, limit: 1 } } }
-                    );
-                  } else if (usedCoupon) {
-                    result = await Coupon.updateOne(
-                      {
-                        couponCode: couponMatch.couponCode,
-                        "usedBy.userId": userId,
-                      },
-                      { $inc: { "usedBy.$.limit": 1 } }
-                    );
+                  if (couponUsed) {
+                    return res.json({ error: "You have used the coupon once" });
                   } else {
-                    return res.json({ error: "You can use only one time" });
-                  }
-                  if (couponMatch.discountType === "fixed") {
-                    console.log("insidee fixedddd");
-                    console.log("total", total);
-                    if (total >= couponMatch.minAmountFixed) {
-                      discount = couponMatch.amount;
-                      res.json({ success: true, discount });
+                    if (couponMatch.discountType === "fixed") {
+                      console.log("insidee fixedddd");
+                      console.log("total", total);
+                      if (total >= couponMatch.minAmountFixed) {
+                        discount = couponMatch.amount;
+                        res.json({ success: true, discount });
+                      } else {
+                        return res.json({
+                          error: `Cart should contain a minimum amount of ${couponMatch.minAmountFixed}`,
+                        });
+                      }
                     } else {
-                      return res.json({
-                        error: `Cart should contain a minimum amount of ${couponMatch.minAmountFixed}`,
-                      });
-                    }
-                  } else {
-                    if (total >= couponMatch.minAmount) {
-                      discount = total * (couponMatch.minAmount / 100);
-                      res.json({ success: true, discount });
-                    } else {
-                      return res.json({
-                        error: `Cart should contain a minimum amount of ${couponMatch.minAmount}`,
-                      });
+                      if (total >= couponMatch.minAmount) {
+                        discount = total * (couponMatch.minAmount / 100);
+                        res.json({ success: true, discount });
+                      } else {
+                        return res.json({
+                          error: `Cart should contain a minimum amount of ${couponMatch.minAmount}`,
+                        });
+                      }
                     }
                   }
-                } else {
-                  //private coupon
                 }
+              } else {
+                // private coupon can be applied only to specific user
+                let couponUsed = await Coupon.findOne({
+                    couponCode: couponMatch.couponCode,
+                    "usedBy.userId": userId,
+                  });
+                  if (couponUsed) {
+                    return res.json({ error: "You have used the coupon once" });
+                  } else {
+                    if (couponMatch.discountType === "fixed") {
+                      console.log("insidee fixedddd");
+                      console.log("total", total);
+                      if (total >= couponMatch.minAmountFixed) {
+                        discount = couponMatch.amount;
+                        res.json({ success: true, discount });
+                      } else {
+                        return res.json({
+                          error: `Cart should contain a minimum amount of ${couponMatch.minAmountFixed}`,
+                        });
+                      }
+                    } else {
+                      if (total >= couponMatch.minAmount) {
+                        discount = total * (couponMatch.minAmount / 100);
+                        res.json({ success: true, discount });
+                      } else {
+                        return res.json({
+                          error: `Cart should contain a minimum amount of ${couponMatch.minAmount}`,
+                        });
+                      }
+                    }
+                  }
               }
-            }
-          } else {
-            return res.json({ error: "COUPON expired" });
+          }else{
+            return res.json({error:"No such coupon found"})
           }
-        } else {
-          return res.json({ error: "COUPON expired" });
+        }else{
+            return res.json({error:"No Coupon found"});
         }
-      } else {
-        return res.json({ error: "COUPON doesn't exist" });
+      }else{
+        return res.json({error:"Coupon is expired"});
       }
     } catch (error) {
       console.log(error);
@@ -150,4 +139,3 @@ module.exports = {
     }
   },
 };
-

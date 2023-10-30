@@ -90,11 +90,18 @@
                       <%}%>
                        results from <%= totalCount %></p>
                     <ul class="pagination">
-                      <% for (let i = 1; i <= totalPages; i++) { %>
-                        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
-                          <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                      <%if(currentPage === 1){%>
+                      <%}else{%>
+                        <li class="page-item <%= currentPage === currentPage ? 'active' : '' %>">
+                          <a class="page-link" href="?page=<%=currentPage-1%>"> prev </a>
                         </li>
-                      <% } %>
+                        <%}%>
+                        <li class="page-item <%= currentPage === currentPage ? '' : '' %>">
+                          <a class="page-link" href="?page=<%=currentPage%>"><%= currentPage %></a>
+                        </li>
+                        <li class="page-item <%= currentPage === currentPage ? 'active' : '' %>">
+                          <a class="page-link" href="?page=<%=currentPage+1%>"> next</a>
+                        </li>
                     </ul>
                   </div>
                   <% } else { %>
@@ -114,7 +121,7 @@
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({ status: newStatus }),
-          })
+          }) 
           .then(response => response.json())
           .then(data => {
             console.log('Order status updated:', data);
@@ -133,13 +140,11 @@
               .then(paymentResponse => paymentResponse.json())
               .then(paymentData => {
                 console.log('Payment status updated:', paymentData);
-                // Update the UI or display a confirmation message
                 const paymentStatusCell = document.getElementById(`paymentStatus${index}`);
                 paymentStatusCell.textContent = 'paid';
               })
               .catch(paymentError => {
                 console.error('Error updating payment status:', paymentError);
-                // Handle error
               });
             }
           })

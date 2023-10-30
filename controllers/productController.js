@@ -9,16 +9,17 @@ const Admin = require("../models/adminSchema");
 const moment = require("moment");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cron = require('node-cron')
 require('dotenv').config();
 
 module.exports = {
+
 getProduct: async (req, res) => {
     try {
-      const page = parseInt(req.query.page) || 1; // Get the page number from query parameters
-      const perPage = 10; // Number of items per page
+      const page = parseInt(req.query.page) || 1; 
+      const perPage = 10; 
       const skip = (page - 1) * perPage;
 
-      // Query the database for products, skip and limit based on the pagination
       const products = await Product.find().skip(skip).limit(perPage).lean();
 
       const totalCount = await Product.countDocuments();
@@ -177,7 +178,6 @@ getProduct: async (req, res) => {
       if (req.body.AvailableQuantity <= 0) {
         req.body.Status = "Out of Stock";
       }
-      // Process uploaded images
 console.log("hereeeeeeeeee");
       const uploaded = await Product.findByIdAndUpdate(_id, req.body);
       res.redirect("/admin/product");
