@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const db = require('./config/db.js')
 const flash = require('express-flash');
-// require('./utility/cron')
+const { checkCategoryOffers } = require('./utility/cron')
 require('dotenv').config()
 
 const ejs = require('ejs')
@@ -30,7 +30,6 @@ app.use(session({
     next();
   })
 app.use(cookieParser())
-  
 
 app.use("/",userRouter)
 app.use('/admin',adminRouter)

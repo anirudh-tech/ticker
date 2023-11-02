@@ -84,7 +84,7 @@ $(document).ready(function () {
     window.location.href = "/admin/addproduct";
   });
 
-  $('input[name="productType"]').change(function () {
+  $('input[name="ProductType"]').change(function () {
     if ($(this).val() === "watches") {
       $("#watchColorInput").show();
       $("#perfumeQuantityDropdown").hide();

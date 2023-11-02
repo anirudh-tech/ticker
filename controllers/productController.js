@@ -47,7 +47,7 @@ getProduct: async (req, res) => {
     try {
       console.log(req.files);
       const images = [];
-      const productType = req.body.productType;
+      const productType = req.body.ProductType;
       const variations = [];
       const category = await Category.findOne({ Name: req.body.Category });
       const BrandName = await Brand.findOne({ Name: req.body.BrandName });
@@ -89,7 +89,7 @@ getProduct: async (req, res) => {
         Specification4: req.body.Specification4,
         DiscountAmount: req.body.DiscountAmount,
         Variation: variations[0].value,
-        ProductType: req.body.productType,
+        ProductType: req.body.ProductType,
         UpdatedOn: moment(new Date()).format("llll"),
         images: images,
       });
@@ -167,7 +167,7 @@ getProduct: async (req, res) => {
         const perfumeQuantity = req.body.perfumes;
         variations.push({ value: perfumeQuantity });
     }
-    
+
     req.body.Variation = variations[0].value;
     req.body.Category = category._id;
     req.body.BrandName = BrandName._id;
@@ -177,9 +177,12 @@ getProduct: async (req, res) => {
     console.log("inside iffff");
       if (req.body.AvailableQuantity <= 0) {
         req.body.Status = "Out of Stock";
+      }else{
+        req.body.Status = "In Stock"
       }
 console.log("hereeeeeeeeee");
-      const uploaded = await Product.findByIdAndUpdate(_id, req.body);
+      // const newField = await Product.updateOne({_id: _id},{$set:{ProductType: req.body.productType}})
+      const updatedProduct = await Product.updateOne({_id: _id}, {$set: req.body});
       res.redirect("/admin/product");
     } catch (error) {
       console.log(`An error happened ${error}`);

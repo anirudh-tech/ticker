@@ -7,9 +7,10 @@
         </a>
       </div>
       <!-- Move the search bar outside of the collapse button -->
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
+      <div class="d-flex">
+        <input class="form-control me-2" id="searchInput" type="text" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" id="searchButton" type="button">Search</button>
+    </div>
       </form>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
@@ -26,7 +27,7 @@
         </ul>
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="/wishlist">
               <i class="fa-solid fa-heart text-danger"></i>
             </a>
           </li>

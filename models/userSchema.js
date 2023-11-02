@@ -14,6 +14,10 @@ const Userschema = new Schema({
      State: { type: String },
      Mobile: { type: Number },
   }],
+  Wishlist: [{
+    ProductId: {type:Schema.Types.ObjectId,ref: "Products"}
+  }],
+  WalletAmount: Number,
 });
 const User =  mongoose.model('User', Userschema);
 module.exports = User

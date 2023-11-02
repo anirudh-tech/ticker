@@ -159,8 +159,8 @@
                         <div class="border p-3 mb-3">
                             <h2>Variations</h2>
                             <div>
-                                <input type="radio" name="productType" id="watchesRadio" value="watches"<% if(product.ProductType === 'watches'){%>checked<%}%> > Watches
-                                <input type="radio" name="productType" id="perfumesRadio" value="perfumes"<% if(product.ProductType === 'perfumes'){%>checked<%}%> > Perfumes
+                                <input type="radio" name="ProductType" id="watchesRadio" value="watches"<% if(product.ProductType === 'watches'){%>checked<%}%> > Watches
+                                <input type="radio" name="ProductType" id="perfumesRadio" value="perfumes"<% if(product.ProductType === 'perfumes'){%>checked<%}%> > Perfumes
                             </div>
                             <div id="watchColorInput" style ="<% if (product.ProductType !== 'watches') { %>display: none;<% } %>">
                                 <label for="watchColors">Enter Watch Colors:</label>

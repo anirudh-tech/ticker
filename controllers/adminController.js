@@ -278,6 +278,7 @@ module.exports = {
           $unwind: "$productDetails",
         },
       ]);
+      console.log(bestSeller)
       if (!latestOrders || !bestSeller) throw new Error("No Data Found");
       res.json({ latestOrders, bestSeller });
     } catch (error) {

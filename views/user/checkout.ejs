@@ -314,18 +314,13 @@
       success: (response) => {
         if (response.codSuccess) {
           window.location = '/orderSuccess'
-          console.log('response got')
         } else {
-          console.log('going to initial')
-          console.log(response.createdOrder)
-          console.log(response.order)
           handlePayNowClick(response)
         }
       }
     })
   })
   function handlePayNowClick (order) {
-    console.log(order)
     var options = {
     "key": "rzp_test_2kq1q9uS7VLUsv",
     "amount": order.createdOrder.amount, 
@@ -335,7 +330,6 @@
     "image": "https://example.com/your_logo",
     "order_id": order.createdOrder.id, 
     "handler": function (response){
-      console.log(response)
         verifyPayment(response, order)
     },
     "prefill": {

@@ -32,6 +32,15 @@ module.exports = {
       console.log(error);
     }
   },
+  getUserSignupWithReferralCode: async (req,res)=>{
+    try {
+      const _id = req.params._id
+      await User.findOneAndUpdate({_id:_id},{$inc:{WalletAmount: 100}})
+      res.redirect('/signup')
+    } catch (error) {
+      console.log(error);
+    }
+  },
 
   postUserSignup: async (req, res) => {
     try {
@@ -41,6 +50,7 @@ module.exports = {
         req.body.confirmPassword,
         salt
       );
+      req.body.WalletAmount = 0
       const user = req.body;
       const Email = req.body.Email;
       const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -58,7 +68,6 @@ module.exports = {
           if (existingUser) {
             req.flash("error", "Email already exist");
             console.log("email exist" + error);
-            // Email already exists, send an error message or handle it as needed
             res.redirect("/signup");
           } else {
             otpToBeSent = otpFunctions.generateOTP();
@@ -211,12 +220,14 @@ module.exports = {
 
   home: async (req, res) => {
     console.log(req.session.user);
+    const userId = req.session?.user?.user;
+    const user = await User.findById(userId);
     const categories = await Category.find();
     const products = await Product.find({ Display: "Active" })
       .sort({ _id: -1 })
       .limit(8);
     res.render("user/homepage", {
-      user: req.session.user,
+      user,
       products,
       categories,
     });
@@ -237,7 +248,22 @@ module.exports = {
     const brands = await Brand.find();
     const id = req.params._id;
     console.log(id);
-
+    let products
+    let query = req.query.query
+    const reg = new RegExp(`^${query}`,"i")
+    if(query){
+      products = await Product.find({ProductName:{$regex:reg}})
+      return res.render("user/shop", {
+        user,
+        categories,
+        brands,
+        products,
+        currentPage: page,
+        perPage,
+        totalCount,
+        totalPages: Math.ceil(totalCount / perPage),
+      });
+    }else{
     if (req.url === "/shop") {
       const products = await Product.find({ Display: "Active" });
       return res.render("user/shop", {
@@ -277,6 +303,46 @@ module.exports = {
         totalPages: Math.ceil(totalCount / perPage),
       });
     }
+  }
+  },
+
+  getSearch: async ( req,res)=>{
+    const searchQuery = req.body.query;
+    const productCriteria = {
+      $or: [
+        { ProductName: { $regex: searchQuery, $options: "i" } }, 
+      ],
+    };
+    console.log("products",productCriteria);
+  
+    Category.find({ Name: { $regex: searchQuery, $options: "i" } })
+      .then((categoryResults) => {
+        Brand.find({ Name: { $regex: searchQuery, $options: "i" } })
+          .then((brandResults) => {
+            Product.find(productCriteria)
+              .then((productResults) => {
+                const results = {
+                  products: productResults,
+                  categories: categoryResults,
+                  brands: brandResults,
+                };
+                res.json(results);
+              })
+              .catch((error) => {
+                console.error(error);
+                res.status(500).json({ error: "An error occurred" });
+              });
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).json({ error: "An error occurred" });
+          });
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error: "An error occurred" });
+      });
+    console.log("search Query",searchQuery);
   },
 
   //product controller
@@ -656,11 +722,6 @@ module.exports = {
   verifyPayment: async (req, res) => {
     console.log("it is the body", req.body);
     let hmac = crypto.createHmac("sha256", process.env.KEY_SECRET);
-    console.log(
-      req.body.payment.razorpay_order_id +
-        "|" +
-        req.body.payment.razorpay_payment_id
-    );
     hmac.update(
       req.body.payment.razorpay_order_id +
         "|" +
@@ -672,7 +733,6 @@ module.exports = {
       const orderId = new mongoose.Types.ObjectId(
         req.body.order.createdOrder.receipt
       );
-      console.log("reciept", req.body.order.createdOrder.receipt);
       const updateOrderDocument = await Order.findByIdAndUpdate(orderId, {
         PaymentStatus: "Paid",
         PaymentMethod: "Online",
@@ -767,9 +827,7 @@ module.exports = {
   updatingQuantity: async (req, res) => {
     try {
       const { productId, change } = req.body;
-
       const userId = req.session.user.user;
-
       const userCart = await Cart.findOne({ UserId: userId });
       const product = await Product.findById(productId);
       if (!userCart || !product) {
@@ -868,12 +926,13 @@ module.exports = {
     const user = await User.findById(userId);
     console.log(userId);
     const orderId = req.session.orderId;
-    console.log(orderId);
+    console.log("orderId==",orderId);
     const order = await Order.findById(orderId).populate("Items.ProductId");
-    const addressId = order.Address._id;
+    console.log("order==",order);
+    const addressName = order?.Address?.Name;
     const address = await User.findOne(
       { _id: userId },
-      { Address: { $elemMatch: { _id: addressId } } }
+      { Address: { $elemMatch: { Name: addressName } } }
     );
     console.log(address, "address");
     // console.log(Address,"address");
@@ -949,4 +1008,46 @@ module.exports = {
       return res.status(500).send("Error cancelling the order");
     }
   },
+
+  getWishlist: async (req,res)=>{
+    const userId = req.session.user.user;
+    const date = new Date()
+    const user = await User.findOne({_id:userId}).populate('Wishlist.ProductId').exec();
+    console.log(user.Wishlist);
+    res.render('user/wishlist',{user,date})
+  },
+
+  addToWishlist: async (req,res)=>{
+    const ProductId = req.params._id
+    const userId = req.session.user.user;
+    const user = await User.findById(userId);
+    const isProductInWishlist = user.Wishlist.some(wish => wish.ProductId.toString() === ProductId);
+    console.log('logginggg',isProductInWishlist)
+    if (isProductInWishlist) {
+      res.json({ success: false, message: "Product already in Wishlist" });
+    } else {
+      console.log('inside else');
+      const result = await User.updateOne(
+        {
+          _id: userId
+        },
+        { $push: { Wishlist: { ProductId: ProductId } } }
+      );
+      res.json({ success: true, message: "Added to wishlist" });
+    }
+  },
+  removeFromWishlist: async (req,res)=>{
+    const ProductId = req.params._id
+    const userId = req.session.user.user;
+    try {
+      const updatedWishlist = await User.findOneAndUpdate(
+        {_id:userId},
+        {$pull:{Wishlist:{ProductId:ProductId}}},
+        {new:true}
+      )
+      res.redirect('/wishlist')
+    }catch(error){
+      console.log(error)
+    }
+  }
 };

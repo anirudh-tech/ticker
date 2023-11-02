@@ -97,6 +97,16 @@ router.route('/addCoupon')
 router.route('/offers')
     .get(adminAuth.adminTokenAuth,offerController.getOffers)
 
+router.route('/addCategoryOffer')
+    .post(adminAuth.adminTokenAuth,offerController.addCategoryOffer)
+
+router.route("/offers/disableAndEnableOffer/:_id")
+    .post(adminAuth.adminTokenAuth,offerController.offerStatus)
+
+
+
+
+
 router.route("/logout")
     .get(adminController.getAdminLogout)
 

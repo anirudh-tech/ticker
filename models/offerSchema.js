@@ -5,5 +5,9 @@ const { Schema, ObjectId } = mongoose;
 const OfferSchema = new Schema({
     categoryName: String,
     offerPrice: Number,
-    expiryDate: Date
+    expiryDate: Date,
+    status: {type: String, default: "Active"}
 })
+
+const offer = mongoose.model('offer',OfferSchema)
+module.exports = offer;

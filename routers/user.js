@@ -15,6 +15,9 @@ router.route('/homepage')
 router.route('/shop')
     .get(userAuth.userTokenAuth,userController.getShop)
 
+router.route('/search-product')
+    .post(userAuth.userTokenAuth,userController.getSearch)
+
 router.route('/category/:_id')
     .get(userAuth.userTokenAuth,userController.getShop)
 
@@ -24,6 +27,10 @@ router.route('/brand/:_id')
 router.route('/signup')
     .get(userAuth.userExist,userController.getUserSignup)
     .post(userController.postUserSignup)
+
+router.route('/signup/:_id')
+    .get(userAuth.userExist,userController.getUserSignupWithReferralCode)
+
 
 router.route('/emailVerification')
     .get(userAuth.userExist,userController.getEmailVerification)
@@ -121,6 +128,9 @@ router.route('/download-invoice/:_id')
 
 router.route("/trackOrder")
     .get(userAuth.userTokenAuth,userController.getTrackOrder)
+
+router.route("/wishlist")
+    .get(userAuth.userTokenAuth,userController.getWishlist)
     
     
     //coupon
@@ -128,7 +138,12 @@ router.route("/checkCoupon")
     .post(userAuth.userTokenAuth,couponController.checkCoupon)
     
 
+//wishlist
+router.route('/addToWishlist/:_id')
+    .get(userAuth.userTokenAuth ,userController.addToWishlist)
 
+router.route('/removeFromWishlist/:_id')
+    .get(userAuth.userTokenAuth ,userController.removeFromWishlist)
 
 router.route('/logout')
     .get(userController.getUserLogout)

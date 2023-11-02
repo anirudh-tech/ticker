@@ -32,9 +32,9 @@
             <% products.forEach(function(product) { %>
                 <div class=" col-lg-4 col-xl-3 col-sm-6 mb-4 equal-width">
                     <div class="card" >
-                        <img src="/uploads/<%= product.images[0] %>" class="card-img-top " style=" height: 40vh;" alt="">
-                        <div class="card-body d-flex flex-column justify-content-between" style=" height: 30vh;">
-                            <h5 class="card-title text-center"><%= product.ProductName %></h5>
+                        <img src="/uploads/<%= product.images[0] %>" class="card-img-top img-fluid " style=" height: 40vh;" alt="">
+                        <div class="card-body d-flex flex-column justify-content-between" style=" height: 25vh;">
+                            <h6 class="card-title text-center product-name"><%= product.ProductName %></h6>
                             <div class="d-flex flex-column justify-content-center">
                                 <% if (product.AvailableQuantity === 0) { %>
                                     <div style="background-color: red;">
@@ -55,6 +55,12 @@
     
 </div>
 </section>
-
+<style>
+    .product-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>
 <%- include('../partials/user-footer')%>
 <%- include('../layouts/footer') %>
