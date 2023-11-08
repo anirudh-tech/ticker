@@ -148,43 +148,62 @@
       </div>
       
       <div class="col-md-5">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Payment Methods</h5>
+        <!-- Inside the "Payment Methods" card -->
+<div class="card">
+  <div class="card-body">
+      <h5 class="card-title">Payment Methods</h5>
 
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="paymentMethod"
-                id="cod"
-                value="cod"
-                checked
-              />
-              <label class="form-check-label" for="cod">
-                Cash on Delivery (COD)
-              </label>
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="paymentMethod"
-                id="online"
-                value="online"
-              />
-              <label class="form-check-label" for="online">
-                Online Payment
-              </label>
-            </div>
-            <div class="justify-content-center">
-              <button class="btn btn-success mt-4" id="pay-button">
-                Confirm Order
-              </button>
-              <a href="/shop"><button class="btn btn-secondary mt-4" type="button">Back to Shop</button></a>
-            </div>
-          </div>
-        </div>
+      <div class="form-check">
+          <input
+              class="form-check-input"
+              type="radio"
+              name="paymentMethod"
+              id="cod"
+              value="cod"
+              checked
+          />
+          <label class="form-check-label" for="cod">
+              Cash on Delivery (COD)
+          </label>
+      </div>
+
+      <div class="form-check">
+          <input
+              class="form-check-input"
+              type="radio"
+              name="paymentMethod"
+              id="online"
+              value="online"
+          />
+          <label class="form-check-label" for="online">
+              Online Payment
+          </label>
+      </div>
+      
+      <!-- Add the "Pay Using Wallet" radio button here -->
+      <div class="form-check">
+          <input
+              class="form-check-input"
+              type="radio"
+              name="paymentMethod"
+              id="wallet"
+              value="wallet"
+          />
+          <label class="form-check-label" data-walletAmount="<%=user.WalletAmount%>" id="<%=cart.TotalAmount%>" for="wallet">
+              Pay Using Wallet (Available Wallet Balance: <%=user.WalletAmount%>)
+          </label>
+      </div>
+
+      <div class="justify-content-center">
+          <button class="btn btn-success mt-4" id="pay-button">
+              Confirm Order
+          </button>
+          <a href="/shop"><button class="btn btn-secondary mt-4" type="button">Back to Shop</button></a>
+      </div>
+  </div>
+</div>
+
+
       </div>
     </div>
   </div>
@@ -307,6 +326,21 @@
         });
         return
       }
+      const walletAmount = $("input[name='paymentMethod']:checked").val()
+      if(walletAmount === "wallet"){
+        const labelElement = document.querySelector('label[for="wallet"]');
+        const walletAmountValue = labelElement.getAttribute('data-walletAmount');
+        const totalAmount = labelElement.getAttribute('id');
+        if(walletAmountValue < totalAmount){
+          Swal.fire({
+            icon: "error",
+            title: "Insufficient Wallet Balance",
+            text: "Your wallet balance is not sufficient for this transaction.",
+        });
+        return;
+        }
+      }
+
     $.ajax({
       url:'/checkout',
       method: 'post',

@@ -26,10 +26,12 @@ module.exports = {
       putUpdateStatus: async (req, res) => {
         console.log("hereee");
         const orderId = req.params.orderId;
-        const { status } = req.body;
+        let { status } = req.body;
     
         try {
-          // Update the order status in the database
+          if(status === "Accept Request"){
+            status = "Returned"
+          }
           const updatedOrder = await Order.findByIdAndUpdate(
             orderId,
             { Status: status },

@@ -29,6 +29,9 @@ module.exports = {
       } else if (req.body.discountType === "percentage") {
         req.body.amount = req.body.amount[0];
       }
+      if(req.body.amount <= 0 ){
+        return res.json({ error: "COUPON amount cannot be 0 or negative" })
+      }
       const coupon = await Coupon.create(req.body);
       if (coupon) {
         console.log("added to collection");
@@ -39,7 +42,11 @@ module.exports = {
       }
     } catch (error) {
       console.log(error);
-      res.json({ error: "Some error occured" });
+      if(error.code === 11000){
+        res.json({error: "Coupon already added"})
+      }else{
+        res.json({ error: "Some error occured" });
+      }
     }
   },
 
@@ -58,7 +65,6 @@ module.exports = {
           let endDate = couponMatch.endDate;
           if (startDate <= currentDate && currentDate <= endDate) {
               if (couponMatch.couponType === "public") {
-                // public coupon apply on all products
                 if (couponMatch.limit === 0) {
                   return res.json({ error: "Coupon already applied" });
                 } else {

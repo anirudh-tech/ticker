@@ -158,10 +158,12 @@
             <input
               type="date"
               class="form-control"
-              id="startDate"
+              id="dateField"
               name="startDate"
               placeholder="Select the date to validate the Coupon"
             />
+            <span id="dateError" style="color: red;"></span>
+
           </div>
           <br />
           <div class="form-group">
@@ -169,7 +171,7 @@
             <input
               type="date"
               class="form-control"
-              id="endDate"
+              
               name="endDate"
               placeholder="Select the date for Expiration of coupon"
             />
@@ -274,6 +276,30 @@
     crossorigin="anonymous"
   ></script>
   <script>
+    const dateField = document.getElementById("dateField");
+    const dateError = document.getElementById("dateError");
+
+    dateField.addEventListener("input", function () {
+      const selectedDate = new Date(dateField.value);
+      const currentDate = new Date();
+
+      if (selectedDate < currentDate) {
+        dateError.textContent = "Please select a future date.";
+        dateField.setCustomValidity("Please select a future date.");
+      } else {
+        dateError.textContent = "";
+        dateField.setCustomValidity("");
+      }
+    });
+
+document
+  .getElementById("couponForm")
+  .addEventListener("submit", function (event) {
+    if (!dateField.checkValidity()) {
+      event.preventDefault();
+    }
+  });
+
     $("#couponForm").submit((e) => {
       e.preventDefault();
       $.ajax({

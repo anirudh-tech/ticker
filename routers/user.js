@@ -10,7 +10,7 @@ router.route('/')
     .get(userController.initial)
 
 router.route('/homepage')
-    .get(userController.home)
+    .get(userAuth.userTokenAuth,userController.home)
 
 router.route('/shop')
     .get(userAuth.userTokenAuth,userController.getShop)
@@ -120,6 +120,10 @@ router.route('/order/details/:_id')
 
 router.route('/order/cancel/:_id')
     .get(userAuth.userTokenAuth,userController.cancelOrder)
+
+router.route('/order/return/:_id')
+    .get(userAuth.userTokenAuth,userController.returnOrder)
+    
 router.route('/download-invoice')
     .post(userAuth.userTokenAuth,userController.downloadInvoice)
 

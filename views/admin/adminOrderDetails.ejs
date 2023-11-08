@@ -4,8 +4,8 @@
 <%- include('../partials/admin-header')%>
 <style>
     .fixed-image {
-        width: 250px;
-        height: 250px;
+        width: 150px; /* Decrease the image size as desired */
+        height: 150px;
         object-fit: fill;
     }
 
@@ -28,24 +28,34 @@
 <div class="header" style="margin-top: 80px;">
     <h1>Order Details</h1>
   </div>
-  <%- include('../partials/admin-canvas')%>
 <div class="container-fluid gradient-custom-2">
-    <div class="row justify-content-center align-items-center h-100">
-        <% if(order && order.Items.length > 0){ %>
-            <% order.Items.forEach((product, index)=> { %>
-                <div class="col-12 col-md-6 col-lg-4 mb-4">
-                    <div class="card" style="border-radius: 16px;">
+    <div class="row">
+        <div class="col-8 mb-4">
+                    <% if (order && order.Items.length > 0) { %>
+                        <% order.Items.forEach((product, index) => { %>
+                    <div class="card mt-2" >
                         <div class="card-body">
-                            <h5 class="card-title">Order ID: <%= order._id %></h5>
-                            <p class="card-text">Placed On: <%= order.OrderDate %></p>
-                            <img src="/uploads/<%=product.ProductId.images[0]%>"
-                                class="card-img-top fixed-image img-fluid pl-3 ml-5" alt="Product Image">
-                            <h6 class="card-subtitle mb-2 text-muted"><%= product.ProductId.ProductName %></h6>
-                            <p class="card-text">Quantity: <%= product.Quantity %></p>
-                            <p class="card-text">Price: ₹ <%= product.ProductId.DiscountAmount %> /-</p>
-                            <p class="card-text">Via: <%= order.PaymentMethod %></p>
-                            <p class="card-text">Status: <%= order.Status %></p>
-
+                            <div>
+                                <h5 class="card-title">Order ID: <%= order._id %></h5>
+                                <h6 class="card-subtitle mb-2 text-muted"><%= product.ProductId.ProductName %></h6>
+                                <p class="card-text">Placed On: <%= order.OrderDate %></p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div class="m-5">
+                                    <img src="/uploads/<%= product.ProductId.images[0] %>"
+                                    class="card-img-top fixed-image img-fluid" alt="Product Image">
+                                    
+                                </div>  
+                                <div>
+                                    <p class="card-text">Quantity: <%= product.Quantity %></p>
+                                    <p class="card-text">Price: ₹ <%= product.ProductId.DiscountAmount %> /-</p>
+                                    <p class="card-text">Via: <%= order.PaymentMethod %></p>
+                                    <p class="card-text">Payment Status:<span class="rounded-sm rounded-pill m-3" style="background-color: #ff8593;"><%= order.PaymentStatus %></span></p>
+                                    <p class="card-text">Status: <%= order.Status %></p>
+                                </div>
+                                <div>
+                                </div>
+                            </div>
                             <div class="progress">
                                 <div class="progress-bar
                                     <% if (order.Status.toLowerCase() === 'order placed') { %> order-placed <% } %>
@@ -68,9 +78,24 @@
                             </div>
                         </div>
                     </div>
+                    <% }) %>
+            <% } %>
                 </div>
-            <% }) %>
-        <% } %>
+                <div class="col-md-4">
+                    <div class="card mt-2">
+                        <h6 class="card-subtitle m-3 text-muted">Shipping Address:</h6>
+                        <% if (order?.Address) { %>
+                            <ul class=" m-3 list-unstyled">
+                                <li><strong>Name:</strong> <%= order.Address.Name %></li>
+                                <li><strong>Address:</strong> <%= order.Address.Address %></li>
+                                <li><strong>Pincode:</strong> <%= order.Address.Pincode %></li>
+                                <li><strong>State:</strong> <%= order.Address.State %></li>
+                                <li><strong>State:</strong> <%= order.Address.City %></li>
+                                <li><strong>Mobile:</strong> <%= order.Address.Mobile %></li>
+                            </ul>
+                        <% }  %>
+                    </div>
+                </div>
     </div>
 </div>
 

@@ -5,17 +5,9 @@
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensure the video covers the entire container */
+    object-fit: cover; 
   }
-  .signup-card {
-    opacity: 0.8; 
-    transition: opacity 0.3s; 
-  }
-  
-  .signup-card:hover {
-    opacity: 1.0; 
-  }
-  
+ 
 
 
 #signupCard::before {
@@ -30,9 +22,9 @@
 }
 
 .transparent-card {
-    background-color: rgba(255, 255, 255, 0.7); /* Adjust the alpha (fourth value) for transparency */
-    border: none; /* Optional: Remove card border */
-    box-shadow: none; /* Optional: Remove card shadow */
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none;
+    box-shadow: none;
   }
 .icons{
     font-family: "Montserrat";

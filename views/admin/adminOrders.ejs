@@ -27,7 +27,7 @@
                     <%= i+1 %>
                   </td>
                   <td>
-                    <%= order[i]._id %>
+                    ORD-<%= order[i]._id %>
                   </td>
                   <td>
                     <%= order[i].UserId %>
@@ -36,21 +36,21 @@
                     <%= order[i].OrderDate %>
                   </td>
                   <td>
-                    <!-- Displaying the current status dynamically -->
                     <% if (order[i].Status !== 'Cancelled') { %>
+                      <% if (order[i].Status !== 'Return Requested') { %>
                         <% const currentStatus = order[i].Status || 'Order Placed'; %>
-                        <select class="form-select" id="statusSelect<%= i %>"
-                          onchange="changeOrderStatus('<%= order[i]._id %>', <%= i %> )">
+                        <select class="form-select" id="statusSelect<%= i %>" onchange="changeOrderStatus('<%= order[i]._id %>', <%= i %> )">
                           <option value="Order Placed" <%= currentStatus === 'Order Placed' ? 'selected' : '' %>>Order Placed</option>
                           <option value="Shipped" <%= currentStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
                           <option value="Delivered" <%= currentStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
                           <option value="Rejected" <%= currentStatus === 'Rejected' ? 'selected' : '' %>>Rejected</option>
+                          <option value="Returned" <%= currentStatus === 'Returned' ? 'selected' : '' %>>Returned</option>
                         </select>
-                      <% } else { %>
+                        <% }else{ %>
+                        Return Requested
+                      <% }} else { %>
                         Cancelled
                       <% } %>
-  
-  
                   </td>
                   <td>
                     <%= order[i].PaymentMethod %>

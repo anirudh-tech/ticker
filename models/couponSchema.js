@@ -10,7 +10,7 @@ const CouponSchema = new mongoose.Schema({
       status: {type: String, default: 'Attempted'}
     }
   ],
-  couponCode: { type: String, required: true },
+  couponCode: { type: String, required: true, unique: true },
   discountType: { type: String, enum: ["percentage", "fixed"] },
   amount: Number,
   minAmount: Number,
@@ -20,7 +20,6 @@ const CouponSchema = new mongoose.Schema({
   couponType: String,
   startDate: Date,
   endDate: Date,
-  category: Array,
   applyType: String,
   status: { type: Boolean, default: true },
 });
