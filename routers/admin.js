@@ -70,8 +70,20 @@ router.route('/editCategory/:_id')
 router.route('/order/details/:_id')
     .get(adminAuth.adminTokenAuth,orderController.getOrderDetails)
 
+router.route('/orders/return-request')
+    .get(adminAuth.adminTokenAuth,orderController.getReturnRequests)
+
+router.route('/order/handleRequest')
+    .post(adminAuth.adminTokenAuth,orderController.getHandleRequest)
+
+
+
+
 router.route('/order/update-status/:orderId')
     .put(adminAuth.adminTokenAuth,orderController.putUpdateStatus)
+
+router.route('/download-sales-report')
+    .post(adminAuth.adminTokenAuth,orderController.getDownloadSalesReport)
 
 router.route("/order")
     .get(adminAuth.adminTokenAuth,orderController.getOrders)

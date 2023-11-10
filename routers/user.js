@@ -122,7 +122,7 @@ router.route('/order/cancel/:_id')
     .get(userAuth.userTokenAuth,userController.cancelOrder)
 
 router.route('/order/return/:_id')
-    .get(userAuth.userTokenAuth,userController.returnOrder)
+    .post(userAuth.userTokenAuth,userController.returnOrder)
     
 router.route('/download-invoice')
     .post(userAuth.userTokenAuth,userController.downloadInvoice)

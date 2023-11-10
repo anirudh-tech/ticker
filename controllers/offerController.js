@@ -18,7 +18,7 @@ module.exports= {
             const categories = await Category.find()
             const categoryOffers = await Offer.find({})
             console.log(categoryOffers);
-            const formattedExpiryDate = moment(categoryOffers.expiryDate).format('llll');
+            const formattedExpiryDate = categoryOffers.expiryDate;
             res.render('admin/offers',{categories,categoryOffers,formattedExpiryDate: formattedExpiryDate})
         } catch (error) {
             

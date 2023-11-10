@@ -24,7 +24,7 @@ module.exports = {
   },
 
   getLogin: async (req, res) => {
-    res.render("admin/adminLogin");
+    res.render("admin/adminLogin", { error: req.session.error });
   },
 
   postLogin: async (req, res) => {
@@ -46,14 +46,17 @@ module.exports = {
           req.session.admin = admin;
           res.redirect("/admin/dashboard");
         } else {
+          req.flash("error", "invalid username or password");
           res.redirect("/admin/login");
         }
       } else {
         console.log(error);
+        req.flash("error", "Account is not active");
         res.redirect("/admin/login");
       }
     } catch (error) {
       console.log(error);
+      req.flash("error", error.message);
       res.redirect("/admin/login");
     }
   },

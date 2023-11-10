@@ -90,7 +90,7 @@ getProduct: async (req, res) => {
         DiscountAmount: req.body.DiscountAmount,
         Variation: variations[0].value,
         ProductType: req.body.ProductType,
-        UpdatedOn: moment(new Date()).format("llll"),
+        UpdatedOn: new Date(),
         images: images,
       });
       newProduct.save();
@@ -138,12 +138,10 @@ getProduct: async (req, res) => {
   postEditProduct: async (req, res) => {
     const _id = req.params._id;
     console.log(_id);
-    console.log(req.files);
     try {
       let images = [];
-      const productType = req.body.productType;
+      const productType = req.body.ProductType;
       const existingProduct = await Product.findById(_id);
-    //   console.log(existingProduct);
       if (existingProduct) {
         images.push(...existingProduct.images); 
     }
@@ -156,32 +154,29 @@ getProduct: async (req, res) => {
             images[i] = req.files[fieldName][0].filename;
         }
     }
-    console.log(req.body);
     const category = await Category.findOne({ Name: req.body.Category });
     const BrandName = await Brand.findOne({ Name: req.body.BrandName });
     
     if (productType === "watches") {
-        const watchColors = req.body.watches;
-        variations.push({ value: watchColors });
+      const watchColors = req.body.watches;
+      variations.push({ value: watchColors });
     } else if (productType === "perfumes") {
-        const perfumeQuantity = req.body.perfumes;
-        variations.push({ value: perfumeQuantity });
+      const perfumeQuantity = req.body.perfumes;
+      variations.push({ value: perfumeQuantity });
     }
-
+    
+    console.log(variations);
     req.body.Variation = variations[0].value;
     req.body.Category = category._id;
     req.body.BrandName = BrandName._id;
     req.body.images = images;
     cropImage(images)
     
-    console.log("inside iffff");
       if (req.body.AvailableQuantity <= 0) {
         req.body.Status = "Out of Stock";
       }else{
         req.body.Status = "In Stock"
       }
-console.log("hereeeeeeeeee");
-      // const newField = await Product.updateOne({_id: _id},{$set:{ProductType: req.body.productType}})
       const updatedProduct = await Product.updateOne({_id: _id}, {$set: req.body});
       res.redirect("/admin/product");
     } catch (error) {

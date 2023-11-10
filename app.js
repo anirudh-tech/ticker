@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const db = require('./config/db.js')
 const flash = require('express-flash');
-const { checkCategoryOffers } = require('./utility/cron')
+// require('./utility/cron')
 require('dotenv').config()
 
 const ejs = require('ejs')

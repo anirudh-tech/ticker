@@ -637,7 +637,7 @@ module.exports = {
     const newOrders = new Order({
       UserId: userId,
       Items: cart.Items,
-      OrderDate: moment(new Date()).format("llll"),
+      OrderDate: new Date(),
       ExpectedDeliveryDate: moment().add(4, "days").format("llll"),
       TotalPrice: req.session.totalPrice,
       Address: add,
@@ -1027,10 +1027,8 @@ module.exports = {
   returnOrder: async (req, res) => {
     const orderId = req.params._id;
     try {
-      const filter = { _id: orderId };
-      const update = { Status: "Return Requested" };
-
-      const order = await Order.findOneAndUpdate(filter, update, { new: true });
+      console.log(req.body.returnReason)
+      const order = await Order.findOneAndUpdate( { _id: orderId }, { $set:{Status: "Return Requested", ReturnReason: req.body.returnReason}}, { new: true });
 
       if (!order) {
         return res.status(404).send("Order not found");

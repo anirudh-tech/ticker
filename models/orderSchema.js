@@ -20,12 +20,14 @@ const OrdersSchema = new Schema({
      Quantity: { type: Number },
   }],
   PaymentMethod: {type: String},
-  OrderDate: { type: String },
+  OrderDate: { type: Date },
+  ShippedDate: { type: Date },
+  DeliveredDate: { type: Date },
   TotalPrice: { type: Number },
   PaymentStatus: {type: String, default: "Pending"},
   CouponId: { type: Schema.Types.ObjectId },
   Address: { type: ShippedAddressSchema },
-
+  ReturnReason: String
 });
 
 const Orders = mongoose.model('Orders', OrdersSchema);

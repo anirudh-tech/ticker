@@ -47,7 +47,7 @@ module.exports = {
             "products": order.Items.map((product) => ({
                 "quantity": product.Quantity,
                 "description": product.ProductId.ProductName, // You might want to use product description here
-                "tax-rate": 18,
+                "tax-rate": 0,
                 "price": product.ProductId.DiscountAmount
             })),
 

@@ -4,6 +4,17 @@
   <h1>Order List</h1>
 </div>
 <%- include('../partials/admin-canvas')%>
+<div class="text-end me-2 mb-2">
+  <a href="/admin/orders/return-request">
+    <button type="submit" class="btn btn-outline-danger" style="border-radius: 10px;">
+      Return requests 
+      <% if (numberOfRequest > 0) { %>
+        <span class="badge bg-secondary"><%= numberOfRequest %></span>
+
+      <% } %>
+    </button>
+  </a>
+</div>
     <div class="container">
         <% if(order.length> 0) { %> 
           <table class="table table-dark table-striped">
@@ -17,7 +28,7 @@
                 <th scope="col">Payment Method</th>
                 <th scope="col">Payment Status</th>
                 <th scope="col">Total</th>
-                <th scope="col">Actions</th> <!-- Added column for actions -->
+                <th scope="col">Actions</th> 
               </tr>
             </thead>
             <tbody>
@@ -38,6 +49,7 @@
                   <td>
                     <% if (order[i].Status !== 'Cancelled') { %>
                       <% if (order[i].Status !== 'Return Requested') { %>
+                        <% if (order[i].Status !== 'Returned') { %>
                         <% const currentStatus = order[i].Status || 'Order Placed'; %>
                         <select class="form-select" id="statusSelect<%= i %>" onchange="changeOrderStatus('<%= order[i]._id %>', <%= i %> )">
                           <option value="Order Placed" <%= currentStatus === 'Order Placed' ? 'selected' : '' %>>Order Placed</option>
@@ -47,6 +59,8 @@
                           <option value="Returned" <%= currentStatus === 'Returned' ? 'selected' : '' %>>Returned</option>
                         </select>
                         <% }else{ %>
+                          Returned
+                        <% }}else{ %>
                         Return Requested
                       <% }} else { %>
                         Cancelled

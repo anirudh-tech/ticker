@@ -8,7 +8,30 @@
     margin-bottom: 0.5rem; /* Add a gap between cards */
   }
 </style>
-
+<% order.forEach(function (order) { %>
+<div class="modal fade" id="returnReasonModal<%= order._id %>" tabindex="-1" aria-labelledby="returnReasonModalLabel<%= order._id %>" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="returnReasonModalLabel<%= order._id %>">Reason for Return</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="/order/return/<%= order._id %>">
+          <div class="mb-3">
+            <label for="returnReason" class="form-label">Please provide a reason for returning the order:</label>
+            <textarea class="form-control" name="returnReason" id="returnReason" rows="3" required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" data-bs-dismiss="modal" class="btn btn-primary" >Submit</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<% }); %>
 <div class="container mt-5">
   <h2>Your Order List</h2>
   <% if (order && order.length > 0) { %>
@@ -22,9 +45,11 @@
           <p class="card-text">Date: <%= order.OrderDate %></p> 
           <div class="d-flex justify-content-end">
             <% if (order.Status === 'Delivered') { %>
-              <a href="/order/details/<%= order._id %>" class="btn btn-primary me-2">View Details</a>
-              <a href="/order/return/<%= order._id %>" class="btn btn-danger me-2">Return</a>
-              <button class="btn btn-warning" onclick="downloadInvoice('<%= order._id %>')">Download Invoice</button>
+              <a  data-bs-toggle="modal" data-bs-target="#returnReasonModal<%= order._id %>" class="btn btn-danger me-2">Return</a>
+              <button class="btn btn-warning" onclick="downloadInvoice('<%= order._id %>')">Download Invoice </button>
+              <% } else if (order.Status === 'Returned') { %>
+                <a href="/order/details/<%= order._id %>" class="btn btn-primary me-2">View Details</a>
+                <button class="btn btn-danger" disabled>Returned</button>
               <% }else if (order.Status === 'Return Requested') { %>
                 <a href="/order/details/<%= order._id %>" class="btn btn-primary me-2">View Details</a>
                 <a href="/order/cancelRequest/<%= order._id %>" class="btn btn-danger me-2">Return Requested/Cancel Request</a>
@@ -73,8 +98,6 @@
     }
   }
   async function downloadInvoice(orderId) {
-
-
                   try {
                     const response = await fetch('/download-invoice', {
                       method: 'POST',
@@ -94,6 +117,23 @@
                     // loadingSpinner.style.display = 'none';
                   }
                 }
+
+  // function submitReturnReason(orderId){
+  //   let reason = document.getElementById('returnReason').value;
+  //   console.log("onsideeee",reason);
+  //   $.ajax({
+  //     url:`/order/return/${orderId}`,
+  //     type:"post",
+  //     data:{
+  //       returnReason:reason,
+  //       orderId:orderId
+  //     },
+  //     success:function(){
+  //       $('#returnReasonModal').modal('hide');
+  //       alert("request sent Successfully");
+  //     },
+  //   })
+  //   }
 </script>
 <%- include('../layouts/footer') %>
 
