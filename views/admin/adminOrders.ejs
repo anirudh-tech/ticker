@@ -50,6 +50,7 @@
                     <% if (order[i].Status !== 'Cancelled') { %>
                       <% if (order[i].Status !== 'Return Requested') { %>
                         <% if (order[i].Status !== 'Returned') { %>
+                          <% if (order[i].Status !== 'Delivered') { %>
                         <% const currentStatus = order[i].Status || 'Order Placed'; %>
                         <select class="form-select" id="statusSelect<%= i %>" onchange="changeOrderStatus('<%= order[i]._id %>', <%= i %> )">
                           <option value="Order Placed" <%= currentStatus === 'Order Placed' ? 'selected' : '' %>>Order Placed</option>
@@ -59,6 +60,8 @@
                           <option value="Returned" <%= currentStatus === 'Returned' ? 'selected' : '' %>>Returned</option>
                         </select>
                         <% }else{ %>
+                          Delivered
+                        <% }}else{ %>
                           Returned
                         <% }}else{ %>
                         Return Requested
@@ -128,7 +131,6 @@
           const newStatus = statusSelect.value;
           location.reload()
         
-          // Assuming you have backend routes for updating order status and payment status
           fetch(`/admin/order/update-status/${orderId}`, {
             method: 'PUT',
             headers: {

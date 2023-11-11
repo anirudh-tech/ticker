@@ -30,10 +30,10 @@
         <div class="col-8 mb-4">
                     <% if (order && order.Items.length > 0) { %>
                         <% order.Items.forEach((product, index) => { %>
-                    <div class="card mt-2" >
-                        <div class="card-body">
+                    <div class="card shadow mt-2" >
+                        <div class="card-body tickerTimes">
                             <div>
-                                <h5 class="card-title">Order ID: <%= order._id %></h5>
+                                <h3 class="card-title">ORDER ID: ORD- <%= order._id %></h3>
                                 <h6 class="card-subtitle mb-2 text-muted"><%= product.ProductId.ProductName %></h6>
                                 <p class="card-text">Placed On: <%= order.OrderDate %></p>
                             </div>
@@ -46,8 +46,8 @@
                                 <div>
                                     <p class="card-text">Quantity: <%= product.Quantity %></p>
                                     <p class="card-text">Price: ₹ <%= product.ProductId.DiscountAmount %> /-</p>
-                                    <p class="card-text">Via: <%= order.PaymentMethod %></p>
-                                    <p class="card-text">Payment Status:<span class="rounded-sm rounded-pill m-3" style="background-color: #ff8593;"><%= order.PaymentStatus %></span></p>
+                                    <p class="card-text">Payment Method: <%= order.PaymentMethod %></p>
+                                    <p class="card-text">Payment Status: <%= order.PaymentStatus %></p>
                                     <p class="card-text">Status: <%= order.Status %></p>
                                 </div>
                                 <div>
@@ -79,16 +79,16 @@
             <% } %>
                 </div>
                 <div class="col-md-4">
-                    <div class="card mt-2">
-                        <h6 class="card-subtitle m-3 text-muted">Shipping Address:</h6>
+                    <div class="card shadow tickerTimes mt-2">
+                        <h2 class="card-subtitle m-3 ">Shipping Address:</h2>
                         <% if (order?.Address) { %>
                             <ul class=" m-3 list-unstyled">
-                                <li><strong>Name:</strong> <%= order.Address.Name %></li>
-                                <li><strong>Address:</strong> <%= order.Address.Address %></li>
-                                <li><strong>Pincode:</strong> <%= order.Address.Pincode %></li>
-                                <li><strong>State:</strong> <%= order.Address.State %></li>
-                                <li><strong>State:</strong> <%= order.Address.City %></li>
-                                <li><strong>Mobile:</strong> <%= order.Address.Mobile %></li>
+                                <li class="h6"><strong>Name:</strong> <%= order.Address.Name %></li>
+                                <li class="h6"><strong>Address:</strong> <%= order.Address.Address %></li>
+                                <li class="h6"><strong>Pincode:</strong> <%= order.Address.Pincode %></li>
+                                <li class="h6"><strong>State:</strong> <%= order.Address.State %></li>
+                                <li class="h6"><strong>State:</strong> <%= order.Address.City %></li>
+                                <li class="h6"><strong>Mobile:</strong> <%= order.Address.Mobile %></li>
                             </ul>
                         <% }  %>
                     </div>

@@ -32,11 +32,11 @@
   </div>
 </div>
 <% }); %>
-<div class="container mt-5">
+<div class="container tickerTimes mt-5">
   <h2>Your Order List</h2>
   <% if (order && order.length > 0) { %>
     <% order.forEach(function (order) { %>
-      <div class="card order-card">
+      <div class="card shadow order-card">
         <div class="card-body">
           <h5 class="card-title">Order ID: ORD-<%= order._id %></h5>
           <p class="card-text">Payment Method: <%= order.PaymentMethod %></p>
@@ -50,11 +50,15 @@
               <% } else if (order.Status === 'Returned') { %>
                 <a href="/order/details/<%= order._id %>" class="btn btn-primary me-2">View Details</a>
                 <button class="btn btn-danger" disabled>Returned</button>
-              <% }else if (order.Status === 'Return Requested') { %>
-                <a href="/order/details/<%= order._id %>" class="btn btn-primary me-2">View Details</a>
-                <a href="/order/cancelRequest/<%= order._id %>" class="btn btn-danger me-2">Return Requested/Cancel Request</a>
-                <button class="btn btn-warning" onclick="downloadInvoice('<%= order._id %>')">Download Invoice</button>
-              <% } else if (order.Status === 'Order Placed' || order.Status === 'Shipped') { %>
+                <% }else if (order.Status === 'Return Requested') { %>
+                  <a href="/order/details/<%= order._id %>" class="btn btn-primary me-2">View Details</a>
+                  <a href="/order/cancelRequest/<%= order._id %>" class="btn btn-danger me-2">Return Requested/Cancel Request</a>
+                  <button class="btn btn-warning " onclick="downloadInvoice('<%= order._id %>')">Download Invoice</button>
+                  <% }else if (order.Status === 'Return Rejected') { %>
+                    <a href="/order/details/<%= order._id %>" class="btn btn-primary me-2">View Details</a>
+                    <button class="btn btn-warning me-2" onclick="downloadInvoice('<%= order._id %>')">Download Invoice </button>
+                  <button class="btn btn-danger" disabled>Request Rejected</button>
+                <% } else if (order.Status === 'Order Placed' || order.Status === 'Shipped') { %>
               <a href="/order/details/<%= order._id %>" class="btn btn-primary me-2">View Details</a>
               <% if (order.Status !== 'Cancelled') { %>
                 <button class="btn btn-danger" onclick="confirmCancellation('<%= order._id %>')">Cancel Order</button>

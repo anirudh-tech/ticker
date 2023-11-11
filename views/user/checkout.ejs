@@ -329,9 +329,13 @@
       const walletAmount = $("input[name='paymentMethod']:checked").val()
       if(walletAmount === "wallet"){
         const labelElement = document.querySelector('label[for="wallet"]');
-        const walletAmountValue = labelElement.getAttribute('data-walletAmount');
-        const totalAmount = labelElement.getAttribute('id');
+        const walletAmountValue = parseInt(labelElement.getAttribute('data-walletAmount'));
+        const totalAmount = parseInt(labelElement.getAttribute('id'));
+        console.log('hii');
+        console.log(totalAmount);
+        console.log(walletAmountValue);
         if(walletAmountValue < totalAmount){
+          console.log("inside if");
           Swal.fire({
             icon: "error",
             title: "Insufficient Wallet Balance",
@@ -348,8 +352,10 @@
       success: (response) => {
         if (response.codSuccess) {
           window.location = '/orderSuccess'
-        } else {
+        } else if(response.onlineSuccess) {
           handlePayNowClick(response)
+        }else if(response.walletSuccess){
+          window.location = '/orderSuccess'
         }
       }
     })

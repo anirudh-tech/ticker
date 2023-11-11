@@ -638,12 +638,10 @@ module.exports = {
       UserId: userId,
       Items: cart.Items,
       OrderDate: new Date(),
-      ExpectedDeliveryDate: moment().add(4, "days").format("llll"),
       TotalPrice: req.session.totalPrice,
       Address: add,
       PaymentMethod: PaymentMethod,
     });
-    await Cart.findByIdAndDelete(cart._id);
     const order = await newOrders.save();
     console.log("in orders==", order);
     req.session.orderId = order._id;
@@ -691,9 +689,9 @@ module.exports = {
         }
         console.log("Success");
       });
+      await Cart.findByIdAndDelete(cart._id);
       res.json({ codSuccess: true });
-    } else {
-      console.log("hereeeeeee");
+    } else if(PaymentMethod === "online") {
       const order = {
         amount: amount,
         currency: "INR",
@@ -703,11 +701,40 @@ module.exports = {
         .createRazorpayOrder(order)
         .then((createdOrder) => {
           console.log("payment response", createdOrder);
-          res.json({ createdOrder, order });
+          res.json({ onlineSuccess:true, createdOrder, order });
         })
-        .catch((err) => {
+        .catch(async(err) => {
           console.log(err);
+          await Cart.findByIdAndDelete(cart._id);
         });
+    }else if(PaymentMethod === "wallet"){
+      const transporter = nodemailer.createTransport({
+        port: 465,
+        host: "smtp.gmail.com",
+        auth: {
+          user: "tickerpage@gmail.com",
+          pass: "vfte pvyn gvat uylk",
+        },
+        secure: true,
+      });
+      const mailData = {
+        from: "tickerpage@gmail.com",
+        to: Email,
+        subject: "Your Orders!",
+        text:
+          `Hello! ${user.Username} Your order has been received and will be processed within one business day.` +
+          ` your total price is ${req.session.totalPrice}`,
+      };
+      transporter.sendMail(mailData, (error, info) => {
+        if (error) {
+          return console.log(error);
+        }
+        console.log("Success");
+      });
+      await User.findByIdAndUpdate(userId,{$inc:{WalletAmount: -order.TotalPrice}})
+      await Order.findByIdAndUpdate(order._id,{PaymentStatus:'Paid'})
+      await Cart.findByIdAndDelete(cart._id);
+      res.json({ walletSuccess: true });
     }
   },
 
@@ -762,7 +789,19 @@ module.exports = {
   getOrderSucces: async (req, res) => {
     const userId = req.session.user.user;
     const user = await User.findById(userId);
+    try {
+      console.log("inside tryy in order success");
+      const order = await Order.findOne({UserId:userId}).sort({_id:-1})
+      const updateOrderStatus = await Order.findByIdAndUpdate(order._id,{Status:'Order Placed'})
+
+
+      // const order = await Order.findOneAndUpdate({UserId:userId},{Status: 'Order Placed'})
+
+      console.log(order);
     res.render("user/orderSuccess", { user });
+    }catch(error){
+      console.log(error);
+    }
   },
 
   postAddressForm: async (req, res) => {

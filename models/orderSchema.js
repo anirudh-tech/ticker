@@ -14,11 +14,12 @@ const ShippedAddressSchema = new Schema({
 
 const OrdersSchema = new Schema({
   UserId: { type: Schema.Types.ObjectId },
-  Status: { type: String, default:"Order Placed"},
+  Status: { type: String, default:"Attempted"},
   Items: [{
      ProductId: { type: Schema.Types.ObjectId , ref: "Products" },
      Quantity: { type: Number },
   }],
+
   PaymentMethod: {type: String},
   OrderDate: { type: Date },
   ShippedDate: { type: Date },

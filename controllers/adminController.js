@@ -253,6 +253,11 @@ module.exports = {
       const latestOrders = await Order.find().sort({ _id: -1 });
       const bestSeller = await Order.aggregate([
         {
+          $match: {
+            status: 'Delivered',
+          },
+        },
+        {
           $unwind: "$Items",
         },
         {

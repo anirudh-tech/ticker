@@ -49,7 +49,7 @@ module.exports = {
           const orderId = req.body.orderId
           const input = req.body.input
           if(input === 'accept'){
-            const order = await Order.findById(orderId)
+            const order = await Order.findById(orderId).populate('Items.ProductId')
             const _id = order.UserId
             if(order.PaymentStatus === 'Paid'){
               await User.findOneAndUpdate(
@@ -63,6 +63,13 @@ module.exports = {
               { Status: status,PaymentStatus: "Refunded" },
               { new: true }
             );
+            console.log(order.Items);
+            order.Items.forEach(async(item)=>{
+              await Product.updateOne(
+                {_id : item.ProductId._id},
+                {$inc:{AvailableQuantity: item.Quantity}}
+              )
+            })
           }else{
             let status = "Return Rejected"
             const updatedOrder = await Order.findByIdAndUpdate(
@@ -96,6 +103,11 @@ module.exports = {
     
           // If the status is "Delivered," update the payment status to "paid"
           if (status.toLowerCase() === "delivered") {
+            const updatedOrder = await Order.findByIdAndUpdate(
+              orderId,
+              {$set:{ DeliveredDate: new Date() }},
+              { new: true }
+            );
             updatedOrder.PaymentStatus = "Paid";
           } else {
             updatedOrder.PaymentStatus = "Pending";

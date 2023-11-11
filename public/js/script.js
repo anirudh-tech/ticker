@@ -1,5 +1,5 @@
 //show eye in password in user signup
-$(document).ready(function () {
+$(document).ready(function () { 
   $("#showPasswordOne").click(function () {
     var passwordField = $("#password");
     var fieldType = passwordField.attr("type");
@@ -10,6 +10,15 @@ $(document).ready(function () {
       passwordField.attr("type", "password");
     }
   });
+
+  $('#password').on('input', function () {
+    const password = $(this).val();
+    if (/\s/.test(password)) {
+      $('#password-whitespace-msg').text('Password cannot contain white spaces');
+  } else {
+      $('#password-whitespace-msg').text('');
+  }
+})
 
   let currentPage = 1; // Starting page
   const perPage = 10; // Number of items per page
