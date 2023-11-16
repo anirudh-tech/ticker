@@ -120,8 +120,14 @@
                                     class="form-control bg-light"
                                     id="basePrice"
                                     placeholder="Enter base price"
+                                    min="0"
                                     required
                                 />
+                                <div
+                                    id="flashMessage1"
+                                    class="alert alert-danger"
+                                    style="display: none"
+                                ></div>
                             </div>
                             <br>
                             <div class="form-group">
@@ -132,8 +138,14 @@
                                     class="form-control bg-light"
                                     id="discountAmount"
                                     placeholder="Enter discount amount"
+                                    min="0"
                                     required
                                 />
+                                <div
+                                    id="flashMessage2"
+                                    class="alert alert-danger"
+                                    style="display: none"
+                                ></div>
                             </div>
                         </div>
 
@@ -221,7 +233,28 @@
         </main>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
 <script>
+     $('#discountAmount').on('input', function () {
+    const Amount = $(this).val();
+    if(Amount <= 0){
+        console.log("inside",Amount);
+        $("#flashMessage2").text("Amount cannot be negative or 0").show()
+    }else{
+        $("#flashMessage2").text("Amount cannot be negative or 0").hide()
+    }
+    })
+
+    $('#basePrice').on('input', function () {
+    const Amount = $(this).val();
+    if(Amount <= 0){
+        console.log("inside",Amount);
+        $("#flashMessage1").text("Amount cannot be negative or 0").show()
+    }else{
+        $("#flashMessage1").text("Amount cannot be negative or 0").hide()
+    }
+    })
     function updatePreviewImage(inputId, imageId) {
         console.log("hellooo");
         const fileInput = document.getElementById(inputId);

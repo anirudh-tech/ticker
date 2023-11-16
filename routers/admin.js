@@ -8,6 +8,7 @@ const adminController = require('../controllers/adminController')
 const userController = require('../controllers/userController')
 const couponController = require('../controllers/couponController')
 const offerController = require('../controllers/offerController')
+const bannerController = require('../controllers/bannerController')
 const upload = require('../middlewares/upload')
 const adminAuth = require('../middlewares/adminAuth')
 const { route } = require('./user')
@@ -116,8 +117,23 @@ router.route("/offers/disableAndEnableOffer/:_id")
     .post(adminAuth.adminTokenAuth,offerController.offerStatus)
 
 
+router.route("/banners")
+    .get(adminAuth.adminTokenAuth,bannerController.getBanners)
 
+router.route("/addBanner")
+    .get(adminAuth.adminTokenAuth,bannerController.getAddBanners)
+    .post(upload.fields([{ name: 'Image', maxCount: 1 },
+    { name: 'carouselImage1', maxCount: 1 },
+    { name: 'carouselImage2', maxCount: 1 },
+    { name: 'carouselImage3', maxCount: 1 },
+    { name: 'Video', maxCount: 1 }]),
+    adminAuth.adminTokenAuth,bannerController.postAddBanner)
 
+router.route("/activate-banner/:id")
+    .post(adminAuth.adminTokenAuth,bannerController.activateBanner)
+
+router.route("/delete-banner/:id")
+    .post(adminAuth.adminTokenAuth,bannerController.deleteBanner)
 
 router.route("/logout")
     .get(adminController.getAdminLogout)

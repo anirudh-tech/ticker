@@ -87,6 +87,7 @@ router.route('/updateQuantity')
 router.route('/profile')
     .get(userAuth.userTokenAuth,userController.profile)
 
+
 router.route('/changePassword')
     .post(userAuth.userTokenAuth,userController.changePassword)
 
@@ -140,6 +141,9 @@ router.route("/wishlist")
     //coupon
 router.route("/checkCoupon")
     .post(userAuth.userTokenAuth,couponController.checkCoupon)
+
+router.route('/coupons')
+    .get(userAuth.userTokenAuth,couponController.getCoupons)
     
 
 //wishlist

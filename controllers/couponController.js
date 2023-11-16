@@ -144,4 +144,11 @@ module.exports = {
       res.json({ error: "Some error Occurred" });
     }
   },
+
+  getCoupons: async (req,res)=>{
+    const userId = req.session.user.user;
+    const user = await User.findById(userId);
+    const coupons = await Coupon.find()
+    res.render('user/coupons',{user,coupons})
+  }
 };

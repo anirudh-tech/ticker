@@ -36,6 +36,7 @@
     "passport": "^0.6.0",
     "razorpay": "^2.9.2",
     "sharp": "^0.32.6",
-    "sweet-alert": "^2.0.5"
+    "sweet-alert": "^2.0.5",
+    "toastify-js": "^1.12.0"
   }
 }

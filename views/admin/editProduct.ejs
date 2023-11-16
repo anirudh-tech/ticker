@@ -137,22 +137,35 @@
                                     class="form-control bg-light"
                                     id="basePrice"
                                     placeholder="Enter base price"
+                                    min="1"
                                     required
                                 />
+                                <div
+                                    id="flashMessage1"
+                                    class="alert alert-danger"
+                                    style="display: none"
+                                ></div>
                             </div>
                             <br>
                             <div class="form-group">
                                 <label for="discountAmount">Discount Amount:</label>
                                 <input
-                                    value="<%=product.DiscountAmount%>"
+                                    value="<%= product.DiscountAmount %>"
                                     type="number"
                                     name="DiscountAmount"
                                     class="form-control bg-light"
                                     id="discountAmount"
                                     placeholder="Enter discount amount"
+                                    min="1"
                                     required
                                 />
+                                <div
+                                    id="flashMessage2"
+                                    class="alert alert-danger"
+                                    style="display: none"
+                                ></div>
                             </div>
+                            
                         </div>
 
 
@@ -238,8 +251,29 @@
         </main>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
 <script>
-    // Function to update the preview image when a file is selected
+    $('#discountAmount').on('input', function () {
+    const Amount = $(this).val();
+    if(Amount <= 0){
+        console.log("inside",Amount);
+        $("#flashMessage2").text("Amount cannot be negative or 0").show()
+    }else{
+        $("#flashMessage2").text("Amount cannot be negative or 0").hide()
+    }
+    })
+
+    $('#basePrice').on('input', function () {
+    const Amount = $(this).val();
+    if(Amount <= 0){
+        console.log("inside",Amount);
+        $("#flashMessage1").text("Amount cannot be negative or 0").show()
+    }else{
+        $("#flashMessage1").text("Amount cannot be negative or 0").hide()
+    }
+    })
+
     function updatePreviewImage(inputId, imageId) {
         const fileInput = document.getElementById(inputId);
         const previewImage = document.getElementById(imageId);

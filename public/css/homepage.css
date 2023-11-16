@@ -1,6 +1,5 @@
 .banner {
-    height: 50vh; /* 50% of viewport height */
-    /* background-image: url('/images/FT_Smart_100723.webp'); */
+    height: 80vh; 
     background-size: 100% auto;
     background-position: center;
     background-repeat: no-repeat;

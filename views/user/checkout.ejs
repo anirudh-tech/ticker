@@ -356,6 +356,12 @@
           handlePayNowClick(response)
         }else if(response.walletSuccess){
           window.location = '/orderSuccess'
+        }else{
+          Swal.fire({
+            icon: "error",
+            title: "Insufficient Stock",
+            text: response.error,
+        });
         }
       }
     })

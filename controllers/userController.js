@@ -8,6 +8,7 @@ const Category = require("../models/categorySchema");
 const Cart = require("../models/cartSchema");
 const Order = require("..//models/orderSchema");
 const Brand = require("../models/brandSchema");
+const Banner = require('../models/bannerSchema')
 const moment = require("moment");
 const nodemailer = require("nodemailer");
 const invoice = require("../utility/invoice");
@@ -226,6 +227,7 @@ module.exports = {
     console.log("sessionnnn", req.session.user);
     const userId = req.session.user?.user;
     const user = await User.findById(userId);
+    const banner = await Banner.findOne({ Status: "Enabled" });
     console.log("userddd", user);
     const categories = await Category.find();
     const products = await Product.find({ Display: "Active" })
@@ -235,6 +237,7 @@ module.exports = {
       user,
       products,
       categories,
+      banner
     });
   },
 
@@ -242,21 +245,35 @@ module.exports = {
     const page = parseInt(req.query.page) || 1;
     const perPage = 16;
     const skip = (page - 1) * perPage;
-    const users = await User.find().skip(skip).limit(perPage);
-    const totalCount = await Product.countDocuments();
-    console.log(req.url);
-    console.log(req.session.user);
+    
+    // Fetch user and other necessary data
     const userId = req.session.user.user;
     const user = await User.findById(userId);
     const categories = await Category.find();
     const brands = await Brand.find();
     const id = req.params._id;
+    
+    // Fetch products based on local storage data if available
+    const localStorageData = req.query.localStorageData; // You need to define how local storage data is passed in the query
+
     let products;
-    let query = req.query.query;
-    const reg = new RegExp(`^${query}`, "i");
-    if (query) {
-      products = await Product.find({ ProductName: { $regex: reg } });
-      return res.render("user/shop", {
+    
+    if (localStorageData) {
+        // Parse and process local storage data (modify as per your local storage data structure)
+        const localStorageParsedData = JSON.parse(localStorageData);
+        const categoryIds = localStorageParsedData.categories;
+
+        // Fetch products based on local storage data
+        products = await Product.find({ Category: { $in: categoryIds } });
+    } else {
+        // Fetch all products if no local storage data is present
+        products = await Product.find().skip(skip).limit(perPage);
+    }
+
+    const totalCount = await Product.countDocuments();
+
+    // Render the view with the fetched products
+    res.render('user/shop', {
         user,
         categories,
         brands,
@@ -264,56 +281,10 @@ module.exports = {
         currentPage: page,
         perPage,
         totalCount,
-        totalPages: Math.ceil(totalCount / perPage),
-      });
-    } else {
-      if (req.url === "/shop") {
-        const products = await Product.find({ Display: "Active" });
-        return res.render("user/shop", {
-          user,
-          categories,
-          brands,
-          products,
-          currentPage: page,
-          perPage,
-          totalCount,
-          totalPages: Math.ceil(totalCount / perPage),
-        });
-      } else if (req.url === `/category/${id}`) {
-        console.log("inside category");
-        const products = await Product.find({
-          Category: id,
-          Display: "Active",
-        });
-        res.render("user/shop", {
-          user,
-          categories,
-          brands,
-          products,
-          currentPage: page,
-          perPage,
-          totalCount,
-          totalPages: Math.ceil(totalCount / perPage),
-        });
-      } else if (req.url === `/brand/${id}`) {
-        console.log("inside brand");
-        const products = await Product.find({
-          BrandName: id,
-          Display: "Active",
-        });
-        res.render("user/shop", {
-          user,
-          categories,
-          brands,
-          products,
-          currentPage: page,
-          perPage,
-          totalCount,
-          totalPages: Math.ceil(totalCount / perPage),
-        });
-      }
-    }
-  },
+        totalPages: Math.ceil(totalCount / perPage)
+    });
+},
+
 
   getSearch: async (req, res) => {
     const searchQuery = req.body.query;
@@ -579,6 +550,7 @@ module.exports = {
     const userId = req.session.user.user;
     const user = await User.findById(userId);
     const productId = req.params._id;
+    console.log("productIdd",productId);
 
     const updatedCart = await Cart.findOneAndUpdate(
       { UserId: user },
@@ -586,7 +558,8 @@ module.exports = {
       { new: true }
     );
     console.log("delete : ", updatedCart);
-    res.redirect("/cart");
+    // res.json({success:true})
+    res.redirect("/cart")
   },
 
   getCheckout: async (req, res) => {
@@ -613,6 +586,15 @@ module.exports = {
     const cart = await Cart.findOne({ UserId: userId }).populate(
       "Items.ProductId"
     );
+    for (const item of cart.Items) {
+      const productId = item.ProductId
+      const product = await Product.findById(productId)
+      const quantity = item.Quantity
+      if(quantity > product.AvailableQuantity){
+        return res.json({error:"Some Products are out of Stock"})
+      }
+    }
+
     console.log(req.session.totalPrice);
     const address = await User.findOne(
       {
