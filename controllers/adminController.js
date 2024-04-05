@@ -137,16 +137,13 @@ module.exports = {
       let labelsByAmount;
       let dataByCount;
       let dataByAmount;
-      console.log('outside')
       orders.forEach((order) => {
-        console.log('inside')
         const orderDate = moment(order.OrderDate, "ddd, MMM D, YYYY h:mm A");
         const dayMonthYear = orderDate.format("YYYY-MM-DD");
         const monthYear = orderDate.format("YYYY-MM");
         const year = orderDate.format("YYYY");
         
         if (req.url === "/count-orders-by-day") {
-          console.log("count");
           if (!orderCountsByDay[dayMonthYear]) {
             orderCountsByDay[dayMonthYear] = 1;
             totalAmountByDay[dayMonthYear] = order.TotalPrice
@@ -254,7 +251,7 @@ module.exports = {
       const bestSeller = await Order.aggregate([
         {
           $match: {
-            status: 'Delivered',
+            Status: 'Delivered',
           },
         },
         {

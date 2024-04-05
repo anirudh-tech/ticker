@@ -111,8 +111,6 @@
                       body: JSON.stringify({ orderId }),
                     })
                     if (response.ok) {
-
-                      console.log("response inside", response)
                       window.location.href = `/download-invoice/${orderId}`;
                     }
                   } catch (err) {

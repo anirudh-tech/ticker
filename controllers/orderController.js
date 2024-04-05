@@ -159,7 +159,6 @@ module.exports = {
         } catch (error) {
           console.log(error);
         }
-
       },
 
       getOrders: async (req, res) => {

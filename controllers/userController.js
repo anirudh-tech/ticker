@@ -242,37 +242,63 @@ module.exports = {
   },
 
   getShop: async (req, res) => {
+    const localStorageData = req?.query?.localStorageData;
+    console.log(req.query);
     const page = parseInt(req.query.page) || 1;
     const perPage = 16;
     const skip = (page - 1) * perPage;
-    
-    // Fetch user and other necessary data
     const userId = req.session.user.user;
     const user = await User.findById(userId);
     const categories = await Category.find();
     const brands = await Brand.find();
     const id = req.params._id;
-    
-    // Fetch products based on local storage data if available
-    const localStorageData = req.query.localStorageData; // You need to define how local storage data is passed in the query
-
+    const selectedCategories = req?.query?.categories ? req?.query?.categories.split(',') : [];
+    const selectedBrands = req?.query?.brands ? req?.query?.brands.split(',') : [];
+    const priceRange = req?.query?.prices?.split('-');
+    console.log(priceRange, "Range");
+    let priceQuery;
+    if (priceRange && priceRange[0] && priceRange[0] !== 'null') {
+      const minPrice = parseInt(priceRange[0], 10);
+      const maxPrice = parseInt(priceRange[1], 10);
+      console.log(minPrice);
+      console.log(maxPrice);
+      if (isNaN(maxPrice)) {
+        priceQuery = {
+        DiscountAmount: { $gte: minPrice }
+      };
+    } else {
+      priceQuery = {
+        DiscountAmount: { $gte: minPrice, $lte: maxPrice }
+      };
+    }
+  }else{
+    priceQuery = {};
+  }
     let products;
-    
-    if (localStorageData) {
-        // Parse and process local storage data (modify as per your local storage data structure)
+    console.log(selectedCategories);
+    if(selectedCategories.length > 0 || selectedBrands > 0 ){
+      console.log(priceQuery,"pricee");
+      products = await Product.find({
+        $or: [
+          { Category: { $in: selectedCategories } },
+          { Brand: { $in: selectedBrands } }
+        ],
+          ...priceQuery
+        }).skip(skip).limit(perPage)
+        }else if (localStorageData) {
         const localStorageParsedData = JSON.parse(localStorageData);
         const categoryIds = localStorageParsedData.categories;
-
-        // Fetch products based on local storage data
         products = await Product.find({ Category: { $in: categoryIds } });
-    } else {
-        // Fetch all products if no local storage data is present
+    }else{
+      if(Object.keys(priceQuery).length === 0){
         products = await Product.find().skip(skip).limit(perPage);
+      }else{
+        products = await Product.find(priceQuery).skip(skip).limit(perPage);
+      }
     }
 
     const totalCount = await Product.countDocuments();
 
-    // Render the view with the fetched products
     res.render('user/shop', {
         user,
         categories,
@@ -727,7 +753,6 @@ module.exports = {
       })
         .populate("Address")
         .populate("Items.ProductId");
-      console.log("order data ====", orderData);
       const filePath = await invoice.order(orderData);
       const orderId = orderData._id;
       res.json({ orderId });
@@ -822,13 +847,12 @@ module.exports = {
       if (user) {
         const { Name, AddressLane, City, State, Pincode, Mobile } = req.body;
 
-        // Find the index of the address in the Address array
         const addressIndex = user.Address.findIndex(
           (a) => a._id.toString() === addressId
         );
-
+        
         if (addressIndex !== -1) {
-          // Update the fields of the existing address
+          
           user.Address[addressIndex].Name = Name;
           user.Address[addressIndex].AddressLane = AddressLane;
           user.Address[addressIndex].City = City;
@@ -836,15 +860,11 @@ module.exports = {
           user.Address[addressIndex].Pincode = Pincode;
           user.Address[addressIndex].Mobile = Mobile;
 
-          // Save the updated user document
           await user.save();
 
-          console.log("Address updated successfully");
-          req.flash("updated", "Address updated successfully");
           res.redirect("/editAddress");
           //   res.status(200).send('Address updated successfully');
         } else {
-          console.log("Address not found");
           req.flash("notFound", "Address not found");
           res.redirect("/editAddress");
           //   res.status(404).send('Address not found');
